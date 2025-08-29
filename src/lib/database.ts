@@ -490,36 +490,40 @@ export class DatabaseManager {
   }
 
   // Health check
-  async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy'; message: string }> {
-    try {
-      // Check if we're online first
-      if (!navigator.onLine) {
-        return { status: 'unhealthy', message: 'No network connection' };
-      }
+async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy'; message: string }> {
+  try {
+    if (!navigator.onLine) {
+      return { status: 'unhealthy', message: 'No network connection' };
+    }
+
       
       // Test database connection with timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
-      
-        .limit(1)
-        .abortSignal(controller.signal);
-      
-      clearTimeout(timeoutId);
-      
-      if (error) throw error;
-      
-      this.lastHealthCheck = Date.now();
-      return { status: 'healthy', message: 'Database connection successful' };
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        return { status: 'unhealthy', message: 'Connection timeout' };
-      }
-      return {
-        status: 'unhealthy',
-        message: error instanceof Error ? error.message : 'Unknown error'
-      };
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000);
+
+    const { error } = await supabase
+      .from('your_table')
+      .select('*')
+      .limit(1)
+      .abortSignal(controller.signal);
+
+    clearTimeout(timeoutId);
+
+    if (error) throw error;
+
+    this.lastHealthCheck = Date.now();
+    return { status: 'healthy', message: 'Database connection successful' };
+  } catch (error: any) {
+    if (error.name === 'AbortError') {
+      return { status: 'unhealthy', message: 'Connection timeout' };
     }
+    return {
+      status: 'unhealthy',
+      message: error instanceof Error ? error.message : 'Unknown error'
+    };
   }
+}
+
   
   // Get connection statistics
   getConnectionStats(): {
