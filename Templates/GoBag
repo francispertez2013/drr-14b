@@ -1,0 +1,671 @@
+import React, { useState, useEffect } from 'react';
+import { 
+  Backpack, 
+  Droplets, 
+  Utensils, 
+  Radio, 
+  Battery, 
+  Lightbulb, 
+  Shield, 
+  FirstAid, 
+  FileText, 
+  Phone, 
+  Coins, 
+  Clock, 
+  CheckCircle, 
+  XCircle,
+  User,
+  Home,
+  MapPin,
+  Sun,
+  Moon,
+  Users,
+  Baby,
+  Accessibility,
+  Dog,
+  Calendar,
+  Download,
+  Printer,
+  Share2,
+  Plus,
+  Minus,
+  Settings,
+  Eye,
+  EyeOff,
+  Volume2,
+  VolumeX,
+  Languages,
+  AlertTriangle,
+  Wind,
+  Waves,
+  Mountain,
+  CloudRain
+} from 'lucide-react';
+
+const App = () => {
+  const [activeSection, setActiveSection] = useState('builder');
+  const [language, setLanguage] = useState('en');
+  const [showPasswords, setShowPasswords] = useState(false);
+  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [profile, setProfile] = useState({
+    householdSize: 1,
+    infants: 0,
+    seniors: 0,
+    pwd: 0,
+    pets: 0,
+    hazards: {
+      typhoon: false,
+      flood: false,
+      earthquake: false,
+      ashfall: false
+    }
+  });
+  const [lastChecked, setLastChecked] = useState(new Date().toISOString().split('T')[0]);
+
+  const t = {
+    en: {
+      title: "What's in your Go-Bag?",
+      subtitle: "Prepare for emergencies with a well-stocked go-bag",
+      essentials: "Essential Items",
+      buildList: "Build My List",
+      print: "Print",
+      download: "Download PDF",
+      tagalog: "Tagalog Version",
+      householdSize: "Household Size",
+      infants: "Infants/Toddlers",
+      seniors: "Seniors",
+      pwd: "Persons with Disabilities",
+      pets: "Pets",
+      hazards: "Hazard Add-Ons",
+      typhoon: "Typhoon",
+      flood: "Flood",
+      earthquake: "Earthquake",
+      ashfall: "Ashfall",
+      calculate: "Calculate Quantities",
+      checklist: "Personalized Checklist",
+      estimatedWeight: "Estimated Pack Weight",
+      reminders: "Set Reminders",
+      lastChecked: "Last checked",
+      saveProfile: "Save Profile",
+      share: "Share",
+      offline: "Offline Mode",
+      evacuation: "Evacuation Info",
+      accessibility: "Accessibility",
+      profile: "Profiles & Special Needs",
+      infantsNeeds: "Infants/Toddlers Needs",
+      seniorsNeeds: "Seniors/PWD Needs",
+      petsNeeds: "Pets Needs"
+    },
+    tl: {
+      title: "Ano ang nasa iyong Go-Bag?",
+      subtitle: "Maghanda para sa mga emergency gamit ang maayos na go-bag",
+      essentials: "Mahahalagang Bagay",
+      buildList: "Gawin ang Aking Listahan",
+      print: "I-print",
+      download: "I-download ang PDF",
+      tagalog: "Bersyon sa Tagalog",
+      householdSize: "Laki ng Pamilya",
+      infants: "Sanggol/Mga Bata",
+      seniors: "Matatanda",
+      pwd: "Mga May Kapansanan",
+      pets: "Mga Alagang Hayop",
+      hazards: "Mga Dagdag na Babala",
+      typhoon: "Bagyo",
+      flood: "Baha",
+      earthquake: "Lindol",
+      ashfall: "Abo",
+      calculate: "Kalkulahin ang Dami",
+      checklist: "Personalisadong Listahan",
+      estimatedWeight: "Tinatayang Bigat ng Bag",
+      reminders: "Itakda ang Paalala",
+      lastChecked: "Huling tiningnan",
+      saveProfile: "I-save ang Profile",
+      share: "Ibahagi",
+      offline: "Offline na Mode",
+      evacuation: "Impormasyon sa Evacuation",
+      accessibility: "Accessibility",
+      profile: "Mga Profile at Espesyal na Pangangailangan",
+      infantsNeeds: "Mga Pangangailangan ng Sanggol/Bata",
+      seniorsNeeds: "Mga Pangangailangan ng Matatanda/May Kapansanan",
+      petsNeeds: "Mga Pangangailangan ng Mga Alagang Hayop"
+    }
+  };
+
+  const essentials = [
+    { name: "Water", quantity: "3 L/day × 3 days", icon: <Droplets className="w-5 h-5" /> },
+    { name: "Food", quantity: "2,100–2,400 kcal/day", icon: <Utensils className="w-5 h-5" /> },
+    { name: "Medications", quantity: "7-day supply", icon: <FirstAid className="w-5 h-5" /> },
+    { name: "IDs", quantity: "Photocopies", icon: <FileText className="w-5 h-5" /> },
+    { name: "Cash", quantity: "Small bills/coins", icon: <Coins className="w-5 h-5" /> },
+    { name: "Flashlight", quantity: "With batteries", icon: <Lightbulb className="w-5 h-5" /> },
+    { name: "Powerbank", quantity: "Charged", icon: <Battery className="w-5 h-5" /> },
+    { name: "Radio", quantity: "AM/FM", icon: <Radio className="w-5 h-5" /> },
+    { name: "Whistle", quantity: "1 per person", icon: <Shield className="w-5 h-5" /> },
+    { name: "Clothing", quantity: "2–3 sets", icon: <span className="text-lg">👕</span> }
+  ];
+
+  const specialNeeds = {
+    infants: [
+      "Diapers (12–18/day)", "Formula & scoops", "Bottles", "Pacifier", "Small toys", "Blanket"
+    ],
+    seniors: [
+      "Week-long meds", "BP monitor", "Spare eyeglasses", "Assistive device batteries", "Hearing-aid batteries"
+    ],
+    pets: [
+      "3-day food", "Extra water", "Leash/carrier", "Vaccine record", "Photo with owner"
+    ]
+  };
+
+  const hazardAddOns = {
+    typhoon: ["Tarpaulin sheet", "Extra duct tape", "Waterproof pouches"],
+    flood: ["Dry bags", "Whistle", "Rope", "Float aid"],
+    earthquake: ["Gloves", "Hard hat", "Shoes by bedside"],
+    ashfall: ["N95 masks", "Goggles", "Plastic covers"]
+  };
+
+  const updateProfile = (field, value) => {
+    setProfile(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const toggleHazard = (hazard) => {
+    setProfile(prev => ({
+      ...prev,
+      hazards: {
+        ...prev.hazards,
+        [hazard]: !prev.hazards[hazard]
+      }
+    }));
+  };
+
+  const calculateQuantities = () => {
+    const totalPeople = profile.householdSize + profile.infants + profile.seniors + profile.pwd;
+    const waterQuantity = totalPeople * 3 * 3; // 3L/day * 3 days
+    const foodCalories = totalPeople * 2250 * 3; // Average 2250 kcal/day * 3 days
+    return { waterQuantity, foodCalories, totalPeople };
+  };
+
+  const { waterQuantity, foodCalories, totalPeople } = calculateQuantities();
+  const estimatedWeight = waterQuantity * 1 + (foodCalories / 1000) * 0.5 + 5; // Approximate weight calculation
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800">
+      {/* Language Toggle */}
+      <div className="absolute top-4 right-4 z-50">
+        <button
+          onClick={() => setLanguage(language === 'en' ? 'tl' : 'en')}
+          className="flex items-center gap-2 px-4 py-2 bg-yellow-500 text-blue-950 rounded-full font-semibold hover:bg-yellow-400 transition-colors"
+        >
+          <Languages className="w-4 h-4" />
+          {language === 'en' ? 'TL' : 'EN'}
+        </button>
+      </div>
+
+      {/* Hero Section */}
+      <section className="relative py-20 px-4">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500 mb-6">
+            <Backpack className="w-10 h-10 text-blue-950" />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
+            {t[language].title}
+          </h1>
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+            {t[language].subtitle}
+          </p>
+          
+          {/* Quick Essentials Checklist */}
+          <div className="bg-white bg-opacity-10 backdrop-blur-sm rounded-2xl p-6 mb-8">
+            <h3 className="text-xl font-bold text-yellow-500 mb-4">{t[language].essentials}</h3>
+            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {essentials.map((item, index) => (
+                <div key={index} className="bg-white bg-opacity-20 rounded-lg p-3 text-center">
+                  <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500 mb-2 mx-auto">
+                    {item.icon}
+                  </div>
+                  <p className="text-white text-xs font-medium">{item.name}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* CTA Buttons */}
+          <div className="flex flex-wrap justify-center gap-4">
+            <button className="px-6 py-3 bg-yellow-500 text-blue-950 font-bold rounded-lg hover:bg-yellow-400 transition-colors flex items-center gap-2">
+              <Plus className="w-4 h-4" />
+              {t[language].buildList}
+            </button>
+            <button className="px-6 py-3 bg-blue-900 text-yellow-500 font-bold rounded-lg hover:bg-blue-800 transition-colors flex items-center gap-2">
+              <Printer className="w-4 h-4" />
+              {t[language].print}
+            </button>
+            <button className="px-6 py-3 bg-blue-900 text-yellow-500 font-bold rounded-lg hover:bg-blue-800 transition-colors flex items-center gap-2">
+              <Download className="w-4 h-4" />
+              {t[language].download}
+            </button>
+            <button 
+              onClick={() => setLanguage('tl')}
+              className="px-6 py-3 bg-blue-900 text-yellow-500 font-bold rounded-lg hover:bg-blue-800 transition-colors flex items-center gap-2"
+            >
+              <Languages className="w-4 h-4" />
+              {t[language].tagalog}
+            </button>
+          </div>
+        </div>
+      </section>
+
+      {/* Interactive Go-Bag Builder */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+            <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+              <h2 className="text-3xl font-bold text-yellow-500">72-Hour Go-Bag Builder</h2>
+              <p className="text-yellow-200">Customize your emergency kit based on your household needs</p>
+            </div>
+            
+            <div className="p-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                {/* Household Profile */}
+                <div>
+                  <h3 className="text-xl font-bold text-blue-950 mb-4 flex items-center gap-2">
+                    <Users className="w-5 h-5" />
+                    Household Profile
+                  </h3>
+                  
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-blue-900 font-medium mb-2">
+                        {t[language].householdSize}: {profile.householdSize}
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => updateProfile('householdSize', Math.max(1, profile.householdSize - 1))}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="text-xl font-bold text-blue-900 w-8 text-center">{profile.householdSize}</span>
+                        <button 
+                          onClick={() => updateProfile('householdSize', profile.householdSize + 1)}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-blue-900 font-medium mb-2">
+                        {t[language].infants}: {profile.infants}
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => updateProfile('infants', Math.max(0, profile.infants - 1))}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="text-xl font-bold text-blue-900 w-8 text-center">{profile.infants}</span>
+                        <button 
+                          onClick={() => updateProfile('infants', profile.infants + 1)}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-blue-900 font-medium mb-2">
+                        {t[language].seniors}: {profile.seniors}
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => updateProfile('seniors', Math.max(0, profile.seniors - 1))}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="text-xl font-bold text-blue-900 w-8 text-center">{profile.seniors}</span>
+                        <button 
+                          onClick={() => updateProfile('seniors', profile.seniors + 1)}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-blue-900 font-medium mb-2">
+                        {t[language].pwd}: {profile.pwd}
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => updateProfile('pwd', Math.max(0, profile.pwd - 1))}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="text-xl font-bold text-blue-900 w-8 text-center">{profile.pwd}</span>
+                        <button 
+                          onClick={() => updateProfile('pwd', profile.pwd + 1)}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-blue-900 font-medium mb-2">
+                        {t[language].pets}: {profile.pets}
+                      </label>
+                      <div className="flex items-center gap-3">
+                        <button 
+                          onClick={() => updateProfile('pets', Math.max(0, profile.pets - 1))}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Minus className="w-4 h-4" />
+                        </button>
+                        <span className="text-xl font-bold text-blue-900 w-8 text-center">{profile.pets}</span>
+                        <button 
+                          onClick={() => updateProfile('pets', profile.pets + 1)}
+                          className="w-10 h-10 rounded-full bg-blue-900 text-yellow-500 hover:bg-blue-800 transition-colors flex items-center justify-center"
+                        >
+                          <Plus className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* Hazard Add-Ons */}
+                <div>
+                  <h3 className="text-xl font-bold text-blue-950 mb-4 flex items-center gap-2">
+                    <AlertTriangle className="w-5 h-5" />
+                    {t[language].hazards}
+                  </h3>
+                  
+                  <div className="space-y-3">
+                    <label className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={profile.hazards.typhoon}
+                        onChange={() => toggleHazard('typhoon')}
+                        className="w-5 h-5 text-blue-900"
+                      />
+                      <Wind className="w-5 h-5 text-blue-900" />
+                      <span className="text-blue-900 font-medium">{t[language].typhoon}</span>
+                    </label>
+                    
+                    <label className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={profile.hazards.flood}
+                        onChange={() => toggleHazard('flood')}
+                        className="w-5 h-5 text-blue-900"
+                      />
+                      <Waves className="w-5 h-5 text-blue-900" />
+                      <span className="text-blue-900 font-medium">{t[language].flood}</span>
+                    </label>
+                    
+                    <label className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={profile.hazards.earthquake}
+                        onChange={() => toggleHazard('earthquake')}
+                        className="w-5 h-5 text-blue-900"
+                      />
+                      <Mountain className="w-5 h-5 text-blue-900" />
+                      <span className="text-blue-900 font-medium">{t[language].earthquake}</span>
+                    </label>
+                    
+                    <label className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg hover:bg-blue-100 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={profile.hazards.ashfall}
+                        onChange={() => toggleHazard('ashfall')}
+                        className="w-5 h-5 text-blue-900"
+                      />
+                      <CloudRain className="w-5 h-5 text-blue-900" />
+                      <span className="text-blue-900 font-medium">{t[language].ashfall}</span>
+                    </label>
+                  </div>
+                  
+                  <button className="w-full mt-6 px-6 py-3 bg-yellow-500 text-blue-950 font-bold rounded-lg hover:bg-yellow-400 transition-colors">
+                    {t[language].calculate}
+                  </button>
+                </div>
+              </div>
+              
+              {/* Results */}
+              <div className="mt-8 p-6 bg-blue-50 rounded-xl">
+                <h3 className="text-xl font-bold text-blue-950 mb-4">{t[language].checklist}</h3>
+                
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                  <div className="bg-white p-4 rounded-lg shadow">
+                    <h4 className="font-bold text-blue-950 mb-2">Water</h4>
+                    <p className="text-2xl font-bold text-yellow-500">{waterQuantity} L</p>
+                    <p className="text-sm text-gray-600">for {totalPeople} people</p>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg shadow">
+                    <h4 className="font-bold text-blue-950 mb-2">Food</h4>
+                    <p className="text-2xl font-bold text-yellow-500">{Math.round(foodCalories)} kcal</p>
+                    <p className="text-sm text-gray-600">3-day supply</p>
+                  </div>
+                  
+                  <div className="bg-white p-4 rounded-lg shadow">
+                    <h4 className="font-bold text-blue-950 mb-2">{t[language].estimatedWeight}</h4>
+                    <p className="text-2xl font-bold text-yellow-500">{Math.round(estimatedWeight)} kg</p>
+                    <p className="text-sm text-gray-600">per person</p>
+                  </div>
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <label className="block text-blue-900 font-medium mb-2">
+                      {t[language].lastChecked}: {lastChecked}
+                    </label>
+                    <input
+                      type="date"
+                      value={lastChecked}
+                      onChange={(e) => setLastChecked(e.target.value)}
+                      className="px-3 py-2 border border-gray-300 rounded-lg"
+                    />
+                  </div>
+                  
+                  <div className="flex gap-3">
+                    <button className="px-4 py-2 bg-blue-900 text-yellow-500 font-medium rounded-lg hover:bg-blue-800 transition-colors flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      {t[language].reminders}
+                    </button>
+                    <button className="px-4 py-2 bg-yellow-500 text-blue-950 font-medium rounded-lg hover:bg-yellow-400 transition-colors flex items-center gap-2">
+                      <Share2 className="w-4 h-4" />
+                      {t[language].share}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Profiles & Special Needs */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              {t[language].profile}
+            </h2>
+            <p className="text-xl text-blue-200">
+              Special considerations for different household members
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Infants */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500">
+                    <Baby className="w-6 h-6 text-blue-950" />
+                  </div>
+                  <h3 className="text-xl font-bold text-yellow-500">{t[language].infantsNeeds}</h3>
+                </div>
+              </div>
+              <div className="p-6">
+                <ul className="space-y-3">
+                  {specialNeeds.infants.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-blue-900">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            
+            {/* Seniors/PWD */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500">
+                    <Accessibility className="w-6 h-6 text-blue-950" />
+                  </div>
+                  <h3 className="text-xl font-bold text-yellow-500">{t[language].seniorsNeeds}</h3>
+                </div>
+              </div>
+              <div className="p-6">
+                <ul className="space-y-3">
+                  {specialNeeds.seniors.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-blue-900">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+            
+            {/* Pets */}
+            <div className="bg-white rounded-2xl shadow-xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500">
+                    <Dog className="w-6 h-6 text-blue-950" />
+                  </div>
+                  <h3 className="text-xl font-bold text-yellow-500">{t[language].petsNeeds}</h3>
+                </div>
+              </div>
+              <div className="p-6">
+                <ul className="space-y-3">
+                  {specialNeeds.pets.map((item, index) => (
+                    <li key={index} className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                      <span className="text-blue-900">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Hazard Add-Ons Details */}
+      <section className="py-16 px-4 bg-blue-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Hazard-Specific Add-Ons
+            </h2>
+            <p className="text-xl text-blue-200">
+              Additional items for specific disaster scenarios
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {Object.entries(hazardAddOns).map(([hazard, items]) => (
+              <div key={hazard} className="bg-white rounded-xl shadow-lg p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  {hazard === 'typhoon' && <Wind className="w-6 h-6 text-blue-900" />}
+                  {hazard === 'flood' && <Waves className="w-6 h-6 text-blue-900" />}
+                  {hazard === 'earthquake' && <Mountain className="w-6 h-6 text-blue-900" />}
+                  {hazard === 'ashfall' && <CloudRain className="w-6 h-6 text-blue-900" />}
+                  <h3 className="text-lg font-bold text-blue-900 capitalize">{t[language][hazard]}</h3>
+                </div>
+                <ul className="space-y-2">
+                  {items.map((item, index) => (
+                    <li key={index} className="flex items-start gap-2 text-sm">
+                      <span className="text-yellow-500">•</span>
+                      <span className="text-blue-800">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Emergency Preparedness Tips */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Emergency <span className="text-yellow-500">Preparedness Tips</span>
+            </h2>
+            <p className="text-xl text-blue-200">
+              Essential recommendations for staying safe during emergencies
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-950">
+                  <User className="w-5 h-5 text-yellow-500" />
+                </div>
+                <h3 className="text-xl font-bold text-blue-950">Family Plan</h3>
+              </div>
+              <p className="text-blue-900">
+                Create a family emergency plan with meeting points and communication strategies. Practice evacuation routes regularly.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-800 to-blue-700 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500">
+                  <Home className="w-5 h-5 text-blue-950" />
+                </div>
+                <h3 className="text-xl font-bold text-yellow-500">Home Preparation</h3>
+              </div>
+              <p className="text-yellow-100">
+                Secure heavy furniture and appliances to walls. Install smoke detectors and fire extinguishers in key locations.
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-xl p-6">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-blue-950">
+                  <MapPin className="w-5 h-5 text-yellow-500" />
+                </div>
+                <h3 className="text-xl font-bold text-blue-950">Know Your Area</h3>
+              </div>
+              <p className="text-blue-900">
+                Identify evacuation routes and flood zones in your area. Locate the nearest evacuation centers and emergency services.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default App;

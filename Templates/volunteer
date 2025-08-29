@@ -1,0 +1,384 @@
+import React, { useState } from 'react';
+import { User, Phone, Mail, MapPin, Calendar, Heart, Shield, Users, Award, CheckCircle, Menu, X } from 'lucide-react';
+
+const App = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    availability: '',
+    skills: '',
+    motivation: ''
+  });
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // Form submission logic would go here
+    alert('Thank you for your volunteer application! We will contact you soon.');
+    setFormData({
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+      address: '',
+      availability: '',
+      skills: '',
+      motivation: ''
+    });
+  };
+
+  const benefits = [
+    {
+      icon: <Shield className="w-8 h-8" />,
+      title: "Community Impact",
+      description: "Make a real difference in your community's disaster preparedness and response efforts."
+    },
+    {
+      icon: <Users className="w-8 h-8" />,
+      title: "Team Collaboration",
+      description: "Work alongside dedicated professionals and fellow volunteers in meaningful initiatives."
+    },
+    {
+      icon: <Award className="w-8 h-8" />,
+      title: "Skill Development",
+      description: "Gain valuable experience and training in emergency management and disaster response."
+    },
+    {
+      icon: <Heart className="w-8 h-8" />,
+      title: "Personal Fulfillment",
+      description: "Experience the satisfaction of helping others and contributing to public safety."
+    }
+  ];
+
+  const requirements = [
+    "Must be at least 18 years old",
+    "Valid government-issued ID",
+    "Good physical and mental health",
+    "Willingness to undergo training programs",
+    "Ability to commit to regular activities",
+    "Pass background check (if required)"
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800">
+      {/* Mobile Menu Button */}
+      <div className="md:hidden fixed top-4 right-4 z-50">
+        <button
+          onClick={() => setIsMenuOpen(!isMenuOpen)}
+          className="p-2 rounded-lg bg-yellow-500 text-blue-950 hover:bg-yellow-400 transition-colors"
+        >
+          {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+      </div>
+
+      {/* Mobile Menu Overlay */}
+      {isMenuOpen && (
+        <div className="md:hidden fixed inset-0 bg-blue-950 bg-opacity-95 z-40 flex items-center justify-center">
+          <div className="text-center space-y-8 p-8">
+            <h2 className="text-3xl font-bold text-yellow-500">Volunteer Program</h2>
+            <nav className="space-y-4">
+              <a href="#benefits" className="block text-white text-xl hover:text-yellow-500 transition-colors">Benefits</a>
+              <a href="#requirements" className="block text-white text-xl hover:text-yellow-500 transition-colors">Requirements</a>
+              <a href="#apply" className="block text-white text-xl hover:text-yellow-500 transition-colors">Apply Now</a>
+            </nav>
+          </div>
+        </div>
+      )}
+
+      {/* Hero Section */}
+      <section className="relative pt-20 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500 mb-6">
+              <Heart className="w-10 h-10 text-blue-950" />
+            </div>
+            <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+              Become a <span className="text-yellow-500">Volunteer</span>
+            </h1>
+            <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+              Join our dedicated team in protecting and serving our community through disaster risk reduction and emergency response efforts.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="#apply"
+                className="px-8 py-4 bg-yellow-500 text-blue-950 font-semibold rounded-lg hover:bg-yellow-400 transition-colors transform hover:scale-105 duration-200"
+              >
+                Apply Now
+              </a>
+              <a
+                href="#benefits"
+                className="px-8 py-4 border-2 border-yellow-500 text-yellow-500 font-semibold rounded-lg hover:bg-yellow-500 hover:text-blue-950 transition-colors"
+              >
+                Learn More
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section id="benefits" className="py-16 px-4 sm:px-6 lg:px-8 bg-blue-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Why Volunteer with <span className="text-yellow-500">MDRRMO</span>?
+            </h2>
+            <p className="text-xl text-blue-200 max-w-3xl mx-auto">
+              Our volunteer program offers unique opportunities to make a meaningful impact while gaining valuable experience.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {benefits.map((benefit, index) => (
+              <div
+                key={index}
+                className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow duration-300 transform hover:-translate-y-2"
+              >
+                <div className="text-yellow-500 mb-4">
+                  {benefit.icon}
+                </div>
+                <h3 className="text-xl font-semibold text-blue-950 mb-3">{benefit.title}</h3>
+                <p className="text-blue-800">{benefit.description}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Requirements Section */}
+      <section id="requirements" className="py-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
+                Volunteer <span className="text-yellow-500">Requirements</span>
+              </h2>
+              <p className="text-xl text-blue-200 mb-8">
+                We welcome passionate individuals who are committed to community service and disaster risk reduction.
+              </p>
+              <ul className="space-y-4">
+                {requirements.map((requirement, index) => (
+                  <li key={index} className="flex items-start">
+                    <CheckCircle className="w-6 h-6 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-blue-100 text-lg">{requirement}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="relative">
+              <div className="bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-2xl p-8 shadow-2xl">
+                <div className="text-blue-950">
+                  <h3 className="text-2xl font-bold mb-4">Ready to Make a Difference?</h3>
+                  <p className="text-blue-900 mb-6">
+                    Join hundreds of volunteers who have already contributed to our community's safety and resilience.
+                  </p>
+                  <div className="flex items-center text-blue-900 mb-2">
+                    <Users className="w-5 h-5 mr-2" />
+                    <span>500+ Active Volunteers</span>
+                  </div>
+                  <div className="flex items-center text-blue-900 mb-2">
+                    <Shield className="w-5 h-5 mr-2" />
+                    <span>50+ Training Programs</span>
+                  </div>
+                  <div className="flex items-center text-blue-900">
+                    <Award className="w-5 h-5 mr-2" />
+                    <span>10+ Years of Service</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Application Form */}
+      <section id="apply" className="py-16 px-4 sm:px-6 lg:px-8 bg-blue-900">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Join Our <span className="text-yellow-500">Volunteer Team</span>
+            </h2>
+            <p className="text-xl text-blue-200">
+              Fill out the form below to start your volunteer journey with MDRRMO
+            </p>
+          </div>
+
+          <div className="bg-white rounded-2xl shadow-2xl p-8">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="firstName" className="block text-blue-950 font-semibold mb-2 flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    First Name
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your first name"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-blue-950 font-semibold mb-2 flex items-center">
+                    <User className="w-4 h-4 mr-2" />
+                    Last Name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your last name"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="email" className="block text-blue-950 font-semibold mb-2 flex items-center">
+                    <Mail className="w-4 h-4 mr-2" />
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your email"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="phone" className="block text-blue-950 font-semibold mb-2 flex items-center">
+                    <Phone className="w-4 h-4 mr-2" />
+                    Phone Number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phone"
+                    name="phone"
+                    value={formData.phone}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                    placeholder="Enter your phone number"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="address" className="block text-blue-950 font-semibold mb-2 flex items-center">
+                  <MapPin className="w-4 h-4 mr-2" />
+                  Complete Address
+                </label>
+                <textarea
+                  id="address"
+                  name="address"
+                  value={formData.address}
+                  onChange={handleInputChange}
+                  required
+                  rows={3}
+                  className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                  placeholder="Enter your complete address"
+                />
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                  <label htmlFor="availability" className="block text-blue-950 font-semibold mb-2 flex items-center">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    Availability
+                  </label>
+                  <select
+                    id="availability"
+                    name="availability"
+                    value={formData.availability}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                  >
+                    <option value="">Select your availability</option>
+                    <option value="weekdays">Weekdays</option>
+                    <option value="weekends">Weekends</option>
+                    <option value="evenings">Evenings</option>
+                    <option value="flexible">Flexible</option>
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor="skills" className="block text-blue-950 font-semibold mb-2">
+                    Relevant Skills or Experience
+                  </label>
+                  <input
+                    type="text"
+                    id="skills"
+                    name="skills"
+                    value={formData.skills}
+                    onChange={handleInputChange}
+                    className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                    placeholder="e.g., First Aid, Communication, Logistics"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label htmlFor="motivation" className="block text-blue-950 font-semibold mb-2">
+                  Why do you want to volunteer with MDRRMO?
+                </label>
+                <textarea
+                  id="motivation"
+                  name="motivation"
+                  value={formData.motivation}
+                  onChange={handleInputChange}
+                  required
+                  rows={4}
+                  className="w-full px-4 py-3 border border-blue-200 rounded-lg focus:ring-2 focus:ring-yellow-500 focus:border-transparent transition-colors"
+                  placeholder="Tell us about your motivation to volunteer..."
+                />
+              </div>
+
+              <div className="text-center">
+                <button
+                  type="submit"
+                  className="px-12 py-4 bg-yellow-500 text-blue-950 font-bold text-lg rounded-lg hover:bg-yellow-400 transition-colors transform hover:scale-105 duration-200 shadow-lg"
+                >
+                  Submit Application
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      {/* Footer Note */}
+      <footer className="py-8 px-4 sm:px-6 lg:px-8 bg-blue-950">
+        <div className="max-w-7xl mx-auto text-center">
+          <p className="text-blue-200">
+            Municipal Disaster Risk Reduction and Management Office (MDRRMO) - Committed to Community Safety
+          </p>
+        </div>
+      </footer>
+    </div>
+  );
+};
+
+export default App;

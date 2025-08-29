@@ -1,0 +1,341 @@
+import React, { useState } from 'react';
+import { ChevronDown, ChevronUp, Shield, AlertTriangle, Phone, Mail, MapPin, Users, Calendar, FileText, HelpCircle } from 'lucide-react';
+
+const App = () => {
+  const [openQuestion, setOpenQuestion] = useState(null);
+
+  const toggleQuestion = (id) => {
+    setOpenQuestion(openQuestion === id ? null : id);
+  };
+
+  const faqCategories = [
+    {
+      id: 1,
+      title: "General Information",
+      icon: <HelpCircle className="w-6 h-6" />,
+      questions: [
+        {
+          id: 1,
+          question: "What is MDRRMO and what does it do?",
+          answer: "The Municipal Disaster Risk Reduction and Management Office (MDRRMO) is responsible for implementing disaster risk reduction and management programs, ensuring community preparedness, coordinating emergency response efforts, and facilitating recovery operations during and after disasters."
+        },
+        {
+          id: 2,
+          question: "Who leads the MDRRMO?",
+          answer: "The MDRRMO is headed by the Municipal Mayor who serves as the Chairman, with the Municipal Administrator or designated officer serving as the Vice Chairman. The office is managed by a dedicated MDRRMO Officer."
+        },
+        {
+          id: 3,
+          question: "What are the operating hours of MDRRMO?",
+          answer: "The MDRRMO operates 24/7 for emergency response. Regular office hours are from 8:00 AM to 5:00 PM, Monday through Friday. During typhoon season or when alerts are raised, the office operates on extended hours."
+        }
+      ]
+    },
+    {
+      id: 2,
+      title: "Emergency Response",
+      icon: <AlertTriangle className="w-6 h-6" />,
+      questions: [
+        {
+          id: 4,
+          question: "What should I do during a typhoon warning?",
+          answer: "Stay informed through official channels, secure loose items outside your home, prepare emergency supplies (water, food, medications), identify safe areas in your home, and follow evacuation orders if issued. Never attempt to cross flooded areas."
+        },
+        {
+          id: 5,
+          question: "How do I report an emergency?",
+          answer: "Call our 24/7 Emergency Hotline at (046) 123-4567 or text 0912-345-6789. You can also report emergencies through our barangay disaster risk reduction and management committees or visit our office in person during regular hours."
+        },
+        {
+          id: 6,
+          question: "When should I evacuate?",
+          answer: "Evacuate immediately when ordered by local authorities. Early evacuation is recommended when: a storm signal #3 or higher is raised, floodwaters reach knee level, landslides are imminent, or when authorities issue a mandatory evacuation order."
+        }
+      ]
+    },
+    {
+      id: 3,
+      title: "Preparedness & Training",
+      icon: <Shield className="w-6 h-6" />,
+      questions: [
+        {
+          id: 7,
+          question: "How can I prepare my family for disasters?",
+          answer: "Create a family emergency plan, assemble an emergency kit with essentials (water, food, medications, flashlight, radio), identify evacuation routes and meeting points, and stay informed about local hazards and warning systems."
+        },
+        {
+          id: 8,
+          question: "Does MDRRMO conduct training programs?",
+          answer: "Yes, we regularly conduct disaster preparedness training, first aid certification courses, emergency response drills, and community awareness programs. Check our announcements for upcoming training schedules or contact us to request training for your organization."
+        },
+        {
+          id: 9,
+          question: "What is included in an emergency kit?",
+          answer: "An emergency kit should include: 1 gallon of water per person per day for at least 3 days, non-perishable food for 3 days, battery-powered radio, flashlight with extra batteries, first aid kit, medications, copies of important documents, cash, and emergency contact information."
+        }
+      ]
+    },
+    {
+      id: 4,
+      title: "Community Involvement",
+      icon: <Users className="w-6 h-6" />,
+      questions: [
+        {
+          id: 10,
+          question: "How can I volunteer with MDRRMO?",
+          answer: "We welcome volunteers with various skills including medical professionals, engineers, logistics coordinators, and community organizers. Contact our office to inquire about current volunteer opportunities and requirements. Volunteers must attend orientation and training programs."
+        },
+        {
+          id: 11,
+          question: "Can our organization partner with MDRRMO?",
+          answer: "Yes, we actively seek partnerships with NGOs, private organizations, schools, and community groups. Partnerships can involve training programs, resource sharing, emergency response coordination, and community awareness campaigns. Contact us to discuss potential collaboration opportunities."
+        },
+        {
+          id: 12,
+          question: "How can barangays improve disaster preparedness?",
+          answer: "Barangays can establish Barangay Disaster Risk Reduction and Management Committees (BDRRMC), conduct regular drills, maintain evacuation centers, update community hazard maps, ensure early warning systems are functional, and coordinate with MDRRMO for training and resources."
+        }
+      ]
+    },
+    {
+      id: 5,
+      title: "Contact & Services",
+      icon: <Phone className="w-6 h-6" />,
+      questions: [
+        {
+          id: 13,
+          question: "Where is the MDRRMO office located?",
+          answer: "Our office is located at the Municipal Hall Complex, Ground Floor, Barangay Central, [Municipality Name]. We are open Monday through Friday from 8:00 AM to 5:00 PM. During emergencies, we operate 24/7 from our Emergency Operations Center."
+        },
+        {
+          id: 14,
+          question: "How can I request disaster-related documents?",
+          answer: "You can request certificates, clearances, and other disaster-related documents by visiting our office during regular hours, calling our main line at (046) 123-4567, or sending an email to info@mdrrmo-[municipality].gov.ph. Some documents may be available online through our portal."
+        },
+        {
+          id: 15,
+          question: "What emergency alerts and warnings do you provide?",
+          answer: "We provide typhoon warnings, flood alerts, landslide advisories, earthquake information, fire safety notices, and other hazard-specific alerts through our hotline, text alerts, social media, local radio stations, and barangay alert systems. We follow PAGASA and PHIVOLCS advisories."
+        }
+      ]
+    }
+  ];
+
+  const emergencyContacts = [
+    {
+      service: "Emergency Hotline",
+      number: "(046) 123-4567",
+      icon: <Phone className="w-5 h-5" />
+    },
+    {
+      service: "Text Emergency",
+      number: "0912-345-6789",
+      icon: <Phone className="w-5 h-5" />
+    },
+    {
+      service: "Email",
+      number: "info@mdrrmo-municipality.gov.ph",
+      icon: <Mail className="w-5 h-5" />
+    },
+    {
+      service: "Office Location",
+      number: "Municipal Hall Complex",
+      icon: <MapPin className="w-5 h-5" />
+    }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800">
+      {/* Hero Section */}
+      <section className="relative py-20 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500 mb-6">
+            <HelpCircle className="w-10 h-10 text-blue-950" />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            Frequently Asked <span className="text-yellow-500">Questions</span>
+          </h1>
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+            Find answers to common questions about disaster preparedness, emergency response, and MDRRMO services.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12">
+            {emergencyContacts.map((contact, index) => (
+              <div key={index} className="bg-white bg-opacity-10 backdrop-blur-sm rounded-lg p-4 text-center">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500 mb-3 mx-auto">
+                  {contact.icon}
+                </div>
+                <h3 className="text-white font-semibold text-sm mb-1">{contact.service}</h3>
+                <p className="text-yellow-300 text-xs">{contact.number}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Categories */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Disaster Preparedness <span className="text-yellow-500">Resources</span>
+            </h2>
+            <p className="text-xl text-blue-200 max-w-3xl mx-auto">
+              Browse our comprehensive FAQ sections to learn more about disaster risk reduction and emergency management.
+            </p>
+          </div>
+
+          <div className="space-y-8">
+            {faqCategories.map((category) => (
+              <div key={category.id} className="bg-white rounded-2xl shadow-xl overflow-hidden">
+                <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                  <div className="flex items-center gap-4">
+                    <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500">
+                      {category.icon}
+                    </div>
+                    <h3 className="text-2xl font-bold text-yellow-500">{category.title}</h3>
+                  </div>
+                </div>
+                
+                <div className="p-6">
+                  {category.questions.map((faq) => (
+                    <div key={faq.id} className="border-b border-gray-200 last:border-b-0">
+                      <button
+                        onClick={() => toggleQuestion(faq.id)}
+                        className="w-full py-6 text-left flex items-start justify-between hover:bg-blue-50 rounded-lg px-4 transition-colors"
+                      >
+                        <span className="text-lg font-semibold text-blue-950 flex-1 mr-4">
+                          {faq.question}
+                        </span>
+                        <div className="text-blue-950 flex-shrink-0">
+                          {openQuestion === faq.id ? 
+                            <ChevronUp className="w-6 h-6" /> : 
+                            <ChevronDown className="w-6 h-6" />
+                          }
+                        </div>
+                      </button>
+                      
+                      {openQuestion === faq.id && (
+                        <div className="px-4 pb-6 -mt-4">
+                          <div className="bg-blue-50 rounded-lg p-6 border-l-4 border-yellow-500">
+                            <p className="text-blue-900 leading-relaxed">{faq.answer}</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Emergency Preparedness Tips */}
+      <section className="py-16 px-4 bg-blue-900">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Quick <span className="text-yellow-500">Preparedness Tips</span>
+            </h2>
+            <p className="text-xl text-blue-200">
+              Essential reminders for staying safe during emergencies
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-950 flex-shrink-0">
+                  <Calendar className="w-6 h-6 text-yellow-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-blue-950 mb-2">Stay Informed</h3>
+                  <p className="text-blue-900">
+                    Monitor official weather advisories and emergency alerts. Keep a battery-powered radio for updates during power outages.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-800 to-blue-700 rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500 flex-shrink-0">
+                  <FileText className="w-6 h-6 text-blue-950" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-yellow-500 mb-2">Emergency Kit</h3>
+                  <p className="text-yellow-100">
+                    Prepare a 72-hour emergency kit with water, non-perishable food, medications, flashlight, and important documents.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-blue-800 to-blue-700 rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500 flex-shrink-0">
+                  <MapPin className="w-6 h-6 text-blue-950" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-yellow-500 mb-2">Evacuation Plan</h3>
+                  <p className="text-yellow-100">
+                    Identify evacuation routes and meeting points with your family. Know the location of your nearest evacuation center.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-xl p-6">
+              <div className="flex items-start gap-4">
+                <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-blue-950 flex-shrink-0">
+                  <Users className="w-6 h-6 text-yellow-500" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-blue-950 mb-2">Community Network</h3>
+                  <p className="text-blue-900">
+                    Stay connected with neighbors and community emergency response teams. Help vulnerable members of your community.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Call to Action */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="bg-white rounded-2xl shadow-2xl p-8 md:p-12">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500 mb-6">
+              <Shield className="w-8 h-8 text-blue-950" />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-blue-950 mb-4">
+              Still Have Questions?
+            </h2>
+            <p className="text-xl text-blue-800 mb-8">
+              Our team is ready to help you with any disaster preparedness or emergency management concerns.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href="tel:09177725016"
+                className="px-8 py-4 bg-blue-950 text-white font-semibold rounded-lg hover:bg-blue-900 transition-colors flex items-center justify-center gap-2"
+              >
+                <Phone className="w-5 h-5" />
+                Call Emergency Hotline
+              </a>
+              <a
+                href="mailto:drrccapioduran@gmail.com"
+                className="px-8 py-4 bg-yellow-500 text-blue-950 font-semibold rounded-lg hover:bg-yellow-400 transition-colors flex items-center justify-center gap-2"
+              >
+                <Mail className="w-5 h-5" />
+                Send Email
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default App;

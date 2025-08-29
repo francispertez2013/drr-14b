@@ -1,0 +1,255 @@
+import React, { useState } from 'react';
+import { User, Users, MapPin, Award, ChevronDown, ChevronUp, Building, Shield } from 'lucide-react';
+
+const App = () => {
+  const [expandedMember, setExpandedMember] = useState(null);
+
+  const toggleMember = (id) => {
+    setExpandedMember(expandedMember === id ? null : id);
+  };
+
+  const councilStructure = {
+    mayor: { name: "Hon. Juan Dela Cruz", title: "Municipal Mayor & Chairman" },
+    secretary: { name: "Maria Santos", title: "General Secretary" },
+    members: [
+      { id: 1, name: "Dr. Roberto Garcia", agency: "Municipal Health Officer" },
+      { id: 2, name: "Carlos Rivera", agency: "Municipal Agriculturist" },
+      { id: 3, name: "Ana Rodriguez", agency: "Municipal Social Welfare Officer" },
+      { id: 4, name: "Pedro Martinez", agency: "Municipal Engineer" },
+      { id: 5, name: "Luisa Fernandez", agency: "Municipal Treasurer" },
+      { id: 6, name: "Ramon Castillo", agency: "Punong Barangay" },
+      { id: 7, name: "Elena Torres", agency: "Municipal Education Officer" },
+      { id: 8, name: "David Cruz", agency: "Municipal Environment Officer" }
+    ]
+  };
+
+  const organizationalStructure = {
+    mayor: { name: "Hon. Juan Dela Cruz", title: "Municipal Mayor & Chairman" },
+    head: { name: "Engr. Maria Santos", title: "MDRRMO Head" },
+    coreOfficers: [
+      {
+        id: 1,
+        name: "Administrative and Training Officer",
+        personnel: [
+          { id: 1, name: "Ana Reyes", designation: "Chief Administrative Officer", certifications: ["Emergency Management Certification", "Public Administration", "Disaster Risk Management"] },
+          { id: 2, name: "Carlos Gomez", designation: "Training Coordinator", certifications: ["First Aid Instructor", "Emergency Response Training", "Community Preparedness"] },
+          { id: 3, name: "Elena Torres", designation: "Administrative Assistant", certifications: ["Records Management", "Office Administration", "Crisis Communication"] },
+          { id: 4, name: "David Cruz", designation: "Logistics Officer", certifications: ["Supply Chain Management", "Emergency Procurement", "Resource Mobilization"] }
+        ]
+      },
+      {
+        id: 2,
+        name: "Operations and Warning Officer",
+        personnel: [
+          { id: 1, name: "Roberto Lim", designation: "Chief Operations Officer", certifications: ["Incident Command System", "Emergency Operations", "Search and Rescue"] },
+          { id: 2, name: "Sofia Chen", designation: "Warning Systems Officer", certifications: ["Early Warning Systems", "Meteorology Basics", "Communication Systems"] },
+          { id: 3, name: "Miguel Santos", designation: "Operations Assistant", certifications: ["Emergency Response", "Disaster Assessment", "Field Operations"] },
+          { id: 4, name: "Isabela Rivera", designation: "Communications Officer", certifications: ["Public Information", "Media Relations", "Crisis Communication"] }
+        ]
+      },
+      {
+        id: 3,
+        name: "Research and Planning Officer",
+        personnel: [
+          { id: 1, name: "Dr. Patricia Yang", designation: "Chief Planning Officer", certifications: ["Disaster Risk Assessment", "Urban Planning", "Climate Change Adaptation"] },
+          { id: 2, name: "Fernando Lopez", designation: "Research Analyst", certifications: ["Data Analysis", "GIS Mapping", "Risk Assessment"] },
+          { id: 3, name: "Carmen Valdez", designation: "Planning Assistant", certifications: ["Community Planning", "Project Development", "Monitoring and Evaluation"] },
+          { id: 4, name: "Alberto Ruiz", designation: "Database Manager", certifications: ["Information Systems", "Data Management", "Statistical Analysis"] }
+        ]
+      }
+    ]
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800">
+      {/* Title Banner - 1/3 size */}
+      <div className="relative h-64 md:h-80 flex items-center justify-center overflow-hidden">
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{
+            backgroundImage: "url('https://placehold.co/1920x1080/1e3a8a/ffffff?text=Disaster+Risk+Reduction')",
+          }}
+        >
+          <div className="absolute inset-0 bg-blue-950 bg-opacity-80"></div>
+        </div>
+        <div className="relative z-10 text-center px-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500 mb-4">
+            <Shield className="w-8 h-8 text-blue-950" />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-yellow-500 mb-2">MDRRMC</h1>
+          <p className="text-sm md:text-lg text-white font-medium max-w-2xl mx-auto leading-relaxed">
+            Municipal Disaster Risk Reduction and Management Council
+          </p>
+        </div>
+      </div>
+
+      {/* MDRRM Council Members */}
+      <section className="py-16 px-4">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-12">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500">
+              <Users className="text-blue-950" size={24} />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">MDRRM Council Members</h2>
+          </div>
+          
+          {/* Mayor Level */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-xl p-8 shadow-2xl w-full max-w-md text-center transform hover:scale-105 transition-transform duration-300">
+              <img 
+                src="https://res.cloudinary.com/dedcmctqk/image/upload/v1749381954/samples/smile.jpg"
+                alt={councilStructure.mayor.name}
+                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-blue-950"
+              />
+              <h3 className="text-xl font-bold text-blue-950 mb-2">{councilStructure.mayor.name}</h3>
+              <p className="text-blue-900 font-semibold">{councilStructure.mayor.title}</p>
+            </div>
+          </div>
+
+          {/* Secretary Level */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-gradient-to-br from-blue-900 to-blue-800 rounded-xl p-8 shadow-2xl w-full max-w-md text-center border-2 border-yellow-500 transform hover:scale-105 transition-transform duration-300">
+              <img 
+                src="https://res.cloudinary.com/dedcmctqk/image/upload/v1749381954/samples/smile.jpg"
+                alt={councilStructure.secretary.name}
+                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-yellow-500"
+              />
+              <h3 className="text-xl font-bold text-yellow-500 mb-2">{councilStructure.secretary.name}</h3>
+              <p className="text-yellow-200 font-semibold">{councilStructure.secretary.title}</p>
+            </div>
+          </div>
+
+          {/* Council Members */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {councilStructure.members.map((member) => (
+              <div key={member.id} className="bg-white rounded-xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2">
+                <div className="flex flex-col items-center text-center">
+                  <img 
+                    src="https://res.cloudinary.com/dedcmctqk/image/upload/v1749381954/samples/smile.jpg"
+                    alt={member.name}
+                    className="w-16 h-16 rounded-full mb-4 object-cover border-2 border-blue-950"
+                  />
+                  <h3 className="font-bold text-blue-950 mb-2">{member.name}</h3>
+                  <div className="inline-flex items-center gap-2 bg-blue-50 px-3 py-1 rounded-full">
+                    <Building className="w-3 h-3 text-blue-950" />
+                    <p className="text-xs text-blue-950 font-medium">{member.agency}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MDRRMO Organizational Structure */}
+      <section className="py-16 px-4 bg-blue-900">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center gap-4 mb-12">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-yellow-500">
+              <MapPin className="text-blue-950" size={24} />
+            </div>
+            <h2 className="text-3xl md:text-4xl font-bold text-white">MDRRMO Organizational Structure</h2>
+          </div>
+
+          {/* Mayor Level */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-gradient-to-br from-yellow-500 to-yellow-400 rounded-xl p-8 shadow-2xl w-full max-w-md text-center transform hover:scale-105 transition-transform duration-300">
+              <img 
+                src="https://res.cloudinary.com/dedcmctqk/image/upload/v1749381954/samples/smile.jpg"
+                alt={organizationalStructure.mayor.name}
+                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-blue-950"
+              />
+              <h3 className="text-xl font-bold text-blue-950 mb-2">{organizationalStructure.mayor.name}</h3>
+              <p className="text-blue-900 font-semibold">{organizationalStructure.mayor.title}</p>
+            </div>
+          </div>
+
+          {/* Head Level */}
+          <div className="flex justify-center mb-12">
+            <div className="bg-gradient-to-br from-blue-800 to-blue-700 rounded-xl p-8 shadow-2xl w-full max-w-md text-center border-2 border-yellow-500 transform hover:scale-105 transition-transform duration-300">
+              <img 
+                src="https://res.cloudinary.com/dedcmctqk/image/upload/v1749381954/samples/smile.jpg"
+                alt={organizationalStructure.head.name}
+                className="w-20 h-20 rounded-full mx-auto mb-4 object-cover border-4 border-yellow-500"
+              />
+              <h3 className="text-xl font-bold text-yellow-500 mb-2">{organizationalStructure.head.name}</h3>
+              <p className="text-yellow-200 font-semibold">{organizationalStructure.head.title}</p>
+            </div>
+          </div>
+
+          {/* Core Officers */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {organizationalStructure.coreOfficers.map((officer) => (
+              <div key={officer.id} className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6 text-center">
+                  <h3 className="text-lg font-bold text-yellow-500">{officer.name}</h3>
+                </div>
+                <div className="p-6">
+                  {officer.personnel.map((person) => (
+                    <div 
+                      key={person.id} 
+                      className="border-b border-gray-200 last:border-b-0 py-4 cursor-pointer hover:bg-blue-50 transition-colors rounded-lg px-2"
+                      onClick={() => toggleMember(`${officer.id}-${person.id}`)}
+                    >
+                      <div className="flex items-start justify-between">
+                        <div className="flex items-start gap-4">
+                          <img 
+                            src="https://res.cloudinary.com/dedcmctqk/image/upload/v1749381954/samples/smile.jpg"
+                            alt={person.name}
+                            className="w-12 h-12 rounded-full object-cover border-2 border-blue-950 flex-shrink-0"
+                          />
+                          <div className="flex-1">
+                            <h4 className="font-bold text-blue-950 mb-1">{person.name}</h4>
+                            <p className="text-sm text-gray-600 mb-2">{person.designation}</p>
+                            {expandedMember === `${officer.id}-${person.id}` && (
+                              <div className="mt-3 p-3 bg-blue-50 rounded-lg">
+                                <div className="flex items-center gap-2 mb-2">
+                                  <Award className="text-yellow-500" size={16} />
+                                  <span className="text-sm font-semibold text-blue-950">Certifications:</span>
+                                </div>
+                                <ul className="text-sm text-gray-700 space-y-1">
+                                  {person.certifications.map((cert, idx) => (
+                                    <li key={idx} className="flex items-start gap-2">
+                                      <span className="text-yellow-500">•</span>
+                                      <span>{cert}</span>
+                                    </li>
+                                  ))}
+                                </ul>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                        <button className="text-blue-950 hover:text-yellow-500 transition-colors ml-2 self-start mt-1">
+                          {expandedMember === `${officer.id}-${person.id}` ? 
+                            <ChevronUp size={20} /> : 
+                            <ChevronDown size={20} />
+                          }
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Mission Statement */}
+      <section className="py-16 px-4">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500 mb-6">
+            <Shield className="w-8 h-8 text-blue-950" />
+          </div>
+          <h2 className="text-3xl font-bold text-white mb-6">Our Mission</h2>
+          <p className="text-xl text-blue-100 leading-relaxed">
+            To protect and serve our community by implementing comprehensive disaster risk reduction strategies, 
+            ensuring preparedness, effective response, and sustainable recovery efforts for all residents.
+          </p>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default App;

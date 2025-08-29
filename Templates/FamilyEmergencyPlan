@@ -1,0 +1,1731 @@
+import React, { useState } from 'react';
+import { 
+  Users, 
+  Phone, 
+  MapPin, 
+  FileText, 
+  CheckCircle, 
+  Home, 
+  Shield, 
+  Calendar, 
+  Download, 
+  Printer, 
+  User, 
+  Baby, 
+  Accessibility, 
+  Dog, 
+  AlertTriangle, 
+  Clock, 
+  MessageSquare, 
+  Mail, 
+  ExternalLink,
+  Plus,
+  Minus,
+  Edit3,
+  Save,
+  Eye,
+  EyeOff
+} from 'lucide-react';
+
+const App = () => {
+  const [activeSection, setActiveSection] = useState('introduction');
+  const [familyMembers, setFamilyMembers] = useState([
+    { id: 1, name: '', age: '', role: '', phone: '', specialNeeds: '' }
+  ]);
+  const [emergencyContacts, setEmergencyContacts] = useState([
+    { id: 1, name: '', relationship: '', phone: '', address: '' }
+  ]);
+  const [meetingPoints, setMeetingPoints] = useState([
+    { id: 1, location: '', address: '', type: 'home' }
+  ]);
+  const [showDownloadOptions, setShowDownloadOptions] = useState(false);
+
+  const addFamilyMember = () => {
+    setFamilyMembers([...familyMembers, {
+      id: Date.now(),
+      name: '',
+      age: '',
+      role: '',
+      phone: '',
+      specialNeeds: ''
+    }]);
+  };
+
+  const removeFamilyMember = (id) => {
+    if (familyMembers.length > 1) {
+      setFamilyMembers(familyMembers.filter(member => member.id !== id));
+    }
+  };
+
+  const updateFamilyMember = (id, field, value) => {
+    setFamilyMembers(familyMembers.map(member => 
+      member.id === id ? { ...member, [field]: value } : member
+    ));
+  };
+
+  const addEmergencyContact = () => {
+    setEmergencyContacts([...emergencyContacts, {
+      id: Date.now(),
+      name: '',
+      relationship: '',
+      phone: '',
+      address: ''
+    }]);
+  };
+
+  const removeEmergencyContact = (id) => {
+    if (emergencyContacts.length > 1) {
+      setEmergencyContacts(emergencyContacts.filter(contact => contact.id !== id));
+    }
+  };
+
+  const updateEmergencyContact = (id, field, value) => {
+    setEmergencyContacts(emergencyContacts.map(contact => 
+      contact.id === id ? { ...contact, [field]: value } : contact
+    ));
+  };
+
+  const addMeetingPoint = () => {
+    setMeetingPoints([...meetingPoints, {
+      id: Date.now(),
+      location: '',
+      address: '',
+      type: 'home'
+    }]);
+  };
+
+  const removeMeetingPoint = (id) => {
+    if (meetingPoints.length > 1) {
+      setMeetingPoints(meetingPoints.filter(point => point.id !== id));
+    }
+  };
+
+  const updateMeetingPoint = (id, field, value) => {
+    setMeetingPoints(meetingPoints.map(point => 
+      point.id === id ? { ...point, [field]: value } : point
+    ));
+  };
+
+  const downloadTemplate = (type) => {
+    const element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(`Family Emergency Plan Template - ${type}`));
+    element.setAttribute('download', `family-emergency-plan-${type}.txt`);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+  };
+
+  const sections = [
+    { id: 'introduction', title: 'Introduction', icon: <Shield className="w-5 h-5" /> },
+    { id: 'communication', title: 'Communication Plan', icon: <Phone className="w-5 h-5" /> },
+    { id: 'evacuation', title: 'Evacuation Routes', icon: <MapPin className="w-5 h-5" /> },
+    { id: 'contacts', title: 'Emergency Contacts', icon: <Users className="w-5 h-5" /> },
+    { id: 'responsibilities', title: 'Responsibilities', icon: <User className="w-5 h-5" /> },
+    { id: 'kit', title: 'Preparedness Kit', icon: <CheckCircle className="w-5 h-5" /> },
+    { id: 'safety', title: 'Home Safety', icon: <Home className="w-5 h-5" /> },
+    { id: 'training', title: 'Training & Drills', icon: <Calendar className="w-5 h-5" /> },
+    { id: 'special', title: 'Special Considerations', icon: <Accessibility className="w-5 h-5" /> },
+    { id: 'review', title: 'Updates & Review', icon: <Edit3 className="w-5 h-5" /> }
+  ];
+
+  const emergencyKitItems = [
+    { category: 'Water & Food', items: ['Water (1 gallon per person per day)', 'Non-perishable food (3-day supply)', 'Manual can opener', 'Disposable plates and utensils'] },
+    { category: 'Medical Supplies', items: ['First aid kit', 'Prescription medications', 'Pain relievers', 'Antiseptic wipes'] },
+    { category: 'Tools & Supplies', items: ['Flashlight', 'Batteries', 'Whistle', 'Multi-tool'] },
+    { category: 'Clothing & Bedding', items: ['Sturdy shoes', 'Warm clothing', 'Rain gear', 'Blankets'] },
+    { category: 'Important Documents', items: ['Copies of IDs', 'Insurance papers', 'Bank records', 'Emergency contact list'] },
+    { category: 'Miscellaneous', items: ['Cash', 'Emergency blanket', 'Duct tape', 'Plastic sheeting'] }
+  ];
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-blue-950 via-blue-900 to-blue-800">
+      {/* Hero Section */}
+      <section className="relative py-20 px-4">
+        <div className="max-w-6xl mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-yellow-500 mb-6">
+            <Shield className="w-10 h-10 text-blue-950" />
+          </div>
+          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6">
+            Family <span className="text-yellow-500">Emergency Plan</span>
+          </h1>
+          <p className="text-xl text-blue-100 max-w-3xl mx-auto mb-8">
+            Create a comprehensive emergency plan to protect your family during disasters. 
+            Be prepared, stay informed, and ensure everyone's safety.
+          </p>
+          
+          <div className="flex flex-wrap justify-center gap-4">
+            <button 
+              onClick={() => setShowDownloadOptions(!showDownloadOptions)}
+              className="px-6 py-3 bg-yellow-500 text-blue-950 font-bold rounded-lg hover:bg-yellow-400 transition-colors flex items-center gap-2"
+            >
+              <Download className="w-4 h-4" />
+              Download Templates
+            </button>
+            <button className="px-6 py-3 bg-blue-900 text-yellow-500 font-bold rounded-lg hover:bg-blue-800 transition-colors flex items-center gap-2">
+              <Printer className="w-4 h-4" />
+              Print Plan
+            </button>
+          </div>
+          
+          {showDownloadOptions && (
+            <div className="mt-4 p-4 bg-white bg-opacity-10 backdrop-blur-sm rounded-lg">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <button 
+                  onClick={() => downloadTemplate('communication')}
+                  className="px-4 py-2 bg-blue-900 text-yellow-500 rounded-lg hover:bg-blue-800 transition-colors"
+                >
+                  Communication Plan
+                </button>
+                <button 
+                  onClick={() => downloadTemplate('contacts')}
+                  className="px-4 py-2 bg-blue-900 text-yellow-500 rounded-lg hover:bg-blue-800 transition-colors"
+                >
+                  Contact List
+                </button>
+                <button 
+                  onClick={() => downloadTemplate('kit')}
+                  className="px-4 py-2 bg-blue-900 text-yellow-500 rounded-lg hover:bg-blue-800 transition-colors"
+                >
+                  Kit Checklist
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Navigation */}
+      <section className="py-8 px-4 bg-blue-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="flex flex-wrap justify-center gap-2">
+            {sections.map((section) => (
+              <button
+                key={section.id}
+                onClick={() => setActiveSection(section.id)}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-300 ${
+                  activeSection === section.id
+                    ? 'bg-yellow-500 text-blue-950 font-bold shadow-lg'
+                    : 'bg-white bg-opacity-10 text-white hover:bg-opacity-20'
+                }`}
+              >
+                {section.icon}
+                <span className="text-sm font-medium">{section.title}</span>
+              </button>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Main Content */}
+      <section className="py-16 px-4">
+        <div className="max-w-6xl mx-auto">
+          {/* Introduction Section */}
+          {activeSection === 'introduction' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <Shield className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Introduction to Family Emergency Plans</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    A family emergency plan is a written document that outlines how your family will respond to different types of emergencies. 
+                    It ensures that everyone knows what to do, where to go, and how to communicate during a crisis.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-3">Why It's Important</h3>
+                      <ul className="space-y-2 text-blue-800">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          Ensures family safety during emergencies
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          Reduces panic and confusion
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          Helps reunite family members quickly
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          Provides clear communication protocols
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-3">Key Components</h3>
+                      <ul className="space-y-2 text-blue-800">
+                        <li className="flex items-start gap-2">
+                          <Users className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          Family communication strategy
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <MapPin className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          Evacuation routes and meeting points
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          Emergency contact information
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <Home className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          Home safety measures
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white">
+                    <h3 className="text-xl font-bold mb-3">Getting Started</h3>
+                    <p className="mb-4">
+                      Creating a family emergency plan doesn't have to be complicated. Start by gathering your family together 
+                      and discussing potential emergencies that could affect your area. Then, work through each section of this 
+                      guide to build a comprehensive plan tailored to your family's needs.
+                    </p>
+                    <p>
+                      Remember to review and practice your plan regularly to ensure everyone knows their role and responsibilities.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Communication Plan Section */}
+          {activeSection === 'communication' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <Phone className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Family Communication Plan</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Establishing a clear communication strategy is crucial for keeping your family connected during emergencies. 
+                    This plan should include multiple methods of communication and backup options.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                      <h3 className="text-2xl font-bold text-blue-950 mb-4">Designating an Out-of-Area Contact</h3>
+                      <div className="bg-blue-50 p-6 rounded-lg">
+                        <ul className="space-y-3 text-blue-800">
+                          <li className="flex items-start gap-3">
+                            <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-semibold">Choose a reliable contact person</p>
+                              <p>Select someone outside your immediate area who can serve as a central point of contact.</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <Mail className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-semibold">Share contact information</p>
+                              <p>Ensure all family members have the contact person's phone number and email address.</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <MessageSquare className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-semibold">Establish communication protocols</p>
+                              <p>Decide on a specific message format and regular check-in times.</p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    
+                    <div>
+                      <h3 className="text-2xl font-bold text-blue-950 mb-4">Meeting Places</h3>
+                      <div className="bg-yellow-50 p-6 rounded-lg">
+                        <ul className="space-y-3 text-blue-800">
+                          <li className="flex items-start gap-3">
+                            <Home className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-semibold">Local meeting place</p>
+                              <p>Choose a safe location near your home where family members can meet if separated.</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <MapPin className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-semibold">Out-of-town meeting place</p>
+                              <p>Select a location outside your immediate area where family members can reunite.</p>
+                            </div>
+                          </li>
+                          <li className="flex items-start gap-3">
+                            <Users className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                            <div>
+                              <p className="font-semibold">Workplace meeting place</p>
+                              <p>Identify a safe location near your workplace or children's school.</p>
+                            </div>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Backup Communication Methods</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Text Messaging</h4>
+                        <p className="text-sm">Often works when voice calls fail</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Social Media</h4>
+                        <p className="text-sm">Use Facebook, Twitter for updates</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Public Message Boards</h4>
+                        <p className="text-sm">Check local community boards</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Customize Your Communication Plan</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      <h4 className="text-lg font-bold text-blue-950 mb-4">Add Family Members</h4>
+                      {familyMembers.map((member, index) => (
+                        <div key={member.id} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-blue-50 rounded-lg">
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Name</label>
+                            <input
+                              type="text"
+                              value={member.name}
+                              onChange={(e) => updateFamilyMember(member.id, 'name', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Full name"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Age</label>
+                            <input
+                              type="number"
+                              value={member.age}
+                              onChange={(e) => updateFamilyMember(member.id, 'age', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Age"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Role</label>
+                            <input
+                              type="text"
+                              value={member.role}
+                              onChange={(e) => updateFamilyMember(member.id, 'role', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Role in plan"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Phone</label>
+                            <input
+                              type="tel"
+                              value={member.phone}
+                              onChange={(e) => updateFamilyMember(member.id, 'phone', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Phone number"
+                            />
+                          </div>
+                          <div className="flex items-end">
+                            <button
+                              onClick={() => removeFamilyMember(member.id)}
+                              className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={addFamilyMember}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-900 text-yellow-500 rounded-md hover:bg-blue-800 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Family Member
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Evacuation Routes Section */}
+          {activeSection === 'evacuation' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <MapPin className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Evacuation Routes & Meeting Points</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Planning evacuation routes and identifying meeting points is essential for ensuring your family's safety 
+                    during emergencies. Having multiple options and clear instructions can make the difference in a crisis.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Home Evacuation Routes</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Primary route</p>
+                            <p>Identify the main exit from your home (front door, back door).</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Secondary route</p>
+                            <p>Plan an alternative exit in case the primary route is blocked.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Escape routes from each room</p>
+                            <p>Ensure every family member knows how to exit from their location.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Workplace/School Routes</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Multiple exit points</p>
+                            <p>Identify all available exits from your workplace or children's school.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Assembly areas</p>
+                            <p>Know where to gather after evacuation from buildings.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Emergency procedures</p>
+                            <p>Understand the established protocols for your workplace/school.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Meeting Points</h3>
+                    <p className="mb-4">
+                      Establish clear meeting points where family members can reunite if separated during an emergency.
+                    </p>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Immediate Area</h4>
+                        <p className="text-sm">A safe spot near your home</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Neighborhood</h4>
+                        <p className="text-sm">A designated community meeting point</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Out of Town</h4>
+                        <p className="text-sm">A location outside your immediate area</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Define Your Meeting Points</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      {meetingPoints.map((point, index) => (
+                        <div key={point.id} className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4 p-4 bg-blue-50 rounded-lg">
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Location Name</label>
+                            <input
+                              type="text"
+                              value={point.location}
+                              onChange={(e) => updateMeetingPoint(point.id, 'location', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Location name"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Address</label>
+                            <input
+                              type="text"
+                              value={point.address}
+                              onChange={(e) => updateMeetingPoint(point.id, 'address', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Full address"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Type</label>
+                            <select
+                              value={point.type}
+                              onChange={(e) => updateMeetingPoint(point.id, 'type', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                            >
+                              <option value="home">Home Area</option>
+                              <option value="neighborhood">Neighborhood</option>
+                              <option value="outoftown">Out of Town</option>
+                              <option value="workplace">Workplace/School</option>
+                            </select>
+                          </div>
+                          <div className="flex items-end">
+                            <button
+                              onClick={() => removeMeetingPoint(point.id)}
+                              className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={addMeetingPoint}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-900 text-yellow-500 rounded-md hover:bg-blue-800 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Meeting Point
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Emergency Contacts Section */}
+          {activeSection === 'contacts' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <Users className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Emergency Contacts List</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Maintaining an up-to-date emergency contacts list is crucial for effective communication during disasters. 
+                    Include both local and out-of-area contacts who can provide assistance or serve as communication hubs.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Local Emergency Services</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Police</p>
+                            <p>Emergency: 911 | Non-emergency: (046) 123-4567</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Fire Department</p>
+                            <p>Emergency: 911 | Station: (046) 234-5678</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Ambulance</p>
+                            <p>Emergency: 911 | Local: (046) 345-6789</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">MDRRMO</p>
+                            <p>Hotline: (046) 456-7890 | Text: 0912-345-6789</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Medical & Utility Contacts</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Doctor/Hospital</p>
+                            <p>Main Hospital: (046) 567-8901 | Family Doctor: (046) 678-9012</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Utilities</p>
+                            <p>Electric: (046) 789-0123 | Water: (046) 890-1234 | Gas: (046) 901-2345</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Phone className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Insurance</p>
+                            <p>Home: (046) 012-3456 | Auto: (046) 123-4567 | Health: (046) 234-5678</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Add Your Emergency Contacts</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      {emergencyContacts.map((contact, index) => (
+                        <div key={contact.id} className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4 p-4 bg-blue-50 rounded-lg">
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Name</label>
+                            <input
+                              type="text"
+                              value={contact.name}
+                              onChange={(e) => updateEmergencyContact(contact.id, 'name', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Full name"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Relationship</label>
+                            <input
+                              type="text"
+                              value={contact.relationship}
+                              onChange={(e) => updateEmergencyContact(contact.id, 'relationship', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Relationship"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Phone</label>
+                            <input
+                              type="tel"
+                              value={contact.phone}
+                              onChange={(e) => updateEmergencyContact(contact.id, 'phone', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Phone number"
+                            />
+                          </div>
+                          <div>
+                            <label className="block text-sm font-medium text-blue-900 mb-1">Address</label>
+                            <input
+                              type="text"
+                              value={contact.address}
+                              onChange={(e) => updateEmergencyContact(contact.id, 'address', e.target.value)}
+                              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
+                              placeholder="Address"
+                            />
+                          </div>
+                          <div className="flex items-end">
+                            <button
+                              onClick={() => removeEmergencyContact(contact.id)}
+                              className="px-3 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                            >
+                              <Minus className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      <button
+                        onClick={addEmergencyContact}
+                        className="flex items-center gap-2 px-4 py-2 bg-blue-900 text-yellow-500 rounded-md hover:bg-blue-800 transition-colors"
+                      >
+                        <Plus className="w-4 h-4" />
+                        Add Emergency Contact
+                      </button>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-8 p-6 bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg text-white">
+                    <h3 className="text-xl font-bold mb-4">Download Your Contacts List</h3>
+                    <p className="mb-4">
+                      Keep a printed copy of your emergency contacts in your go-bag and wallet. 
+                      Also store digital copies on your phone and in cloud storage.
+                    </p>
+                    <button
+                      onClick={() => downloadTemplate('contacts')}
+                      className="flex items-center gap-2 px-6 py-3 bg-yellow-500 text-blue-950 font-bold rounded-lg hover:bg-yellow-400 transition-colors"
+                    >
+                      <Download className="w-4 h-4" />
+                      Download Contact List Template
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Responsibilities Section */}
+          {activeSection === 'responsibilities' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <User className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Individual Responsibilities</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Assigning specific tasks to each family member ensures that everyone knows their role during an emergency. 
+                    Clear responsibilities help maintain order and efficiency when time is critical.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Pre-Evacuation Tasks</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Emergency Kit Assembly</p>
+                            <p>Designate who will grab the go-bag and emergency supplies.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Pet Care</p>
+                            <p>Assign someone to secure pets and their supplies.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Utility Shutdown</p>
+                            <p>Identify who will turn off gas, water, and electricity.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Document Collection</p>
+                            <p>Assign someone to gather important papers and valuables.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">During Evacuation Tasks</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Head Count</p>
+                            <p>Assign someone to ensure all family members are accounted for.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Communication</p>
+                            <p>Designate who will contact the out-of-area emergency contact.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Assistance</p>
+                            <p>Identify who will help elderly, disabled, or young family members.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Navigation</p>
+                            <p>Assign someone familiar with evacuation routes to lead.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Special Considerations</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Children</h4>
+                        <p className="text-sm">Assign age-appropriate tasks and ensure supervision</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Elderly</h4>
+                        <p className="text-sm">Designate helpers for mobility and medical needs</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Disabled</h4>
+                        <p className="text-sm">Ensure accessibility and specialized equipment</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Assign Responsibilities</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Family Members</h4>
+                          {familyMembers.map((member) => (
+                            <div key={member.id} className="p-4 bg-blue-50 rounded-lg mb-3">
+                              <h5 className="font-semibold text-blue-900">{member.name || 'Unnamed Member'}</h5>
+                              <p className="text-sm text-blue-700">{member.role || 'No role assigned'}</p>
+                            </div>
+                          ))}
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Key Responsibilities</h4>
+                          <div className="space-y-3">
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                              <p className="font-semibold text-blue-900">Emergency Kit Manager</p>
+                              <p className="text-sm text-blue-700">Responsible for go-bag and supplies</p>
+                            </div>
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                              <p className="font-semibold text-blue-900">Communication Coordinator</p>
+                              <p className="text-sm text-blue-700">Handles all family communications</p>
+                            </div>
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                              <p className="font-semibold text-blue-900">Evacuation Leader</p>
+                              <p className="text-sm text-blue-700">Leads family during evacuation</p>
+                            </div>
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                              <p className="font-semibold text-blue-900">Pet Care Coordinator</p>
+                              <p className="text-sm text-blue-700">Manages all pet-related needs</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Preparedness Kit Section */}
+          {activeSection === 'kit' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Preparedness Kit Checklist</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    A well-stocked emergency kit is essential for surviving the first 72 hours of a disaster. 
+                    Your kit should be portable, waterproof, and contain supplies for each family member.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div>
+                      {emergencyKitItems.slice(0, 3).map((category, index) => (
+                        <div key={index} className="bg-blue-50 p-6 rounded-lg mb-6">
+                          <h3 className="text-xl font-bold text-blue-950 mb-4">{category.category}</h3>
+                          <ul className="space-y-2 text-blue-800">
+                            {category.items.map((item, itemIndex) => (
+                              <li key={itemIndex} className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    
+                    <div>
+                      {emergencyKitItems.slice(3).map((category, index) => (
+                        <div key={index} className="bg-yellow-50 p-6 rounded-lg mb-6">
+                          <h3 className="text-xl font-bold text-blue-950 mb-4">{category.category}</h3>
+                          <ul className="space-y-2 text-blue-800">
+                            {category.items.map((item, itemIndex) => (
+                              <li key={itemIndex} className="flex items-start gap-3">
+                                <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                                <span>{item}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Kit Storage & Maintenance</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Storage Location</h4>
+                        <p className="text-sm">Keep in easily accessible, known location</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Regular Checks</h4>
+                        <p className="text-sm">Inspect every 6 months for expired items</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Customization</h4>
+                        <p className="text-sm">Add items specific to your family's needs</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Download Your Kit Checklist</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      <div className="flex flex-col md:flex-row gap-6 items-center">
+                        <div className="flex-1">
+                          <p className="text-blue-900 mb-4">
+                            Download and print this comprehensive checklist to ensure you don't miss any essential items. 
+                            Keep it with your emergency kit for regular reference.
+                          </p>
+                          <button
+                            onClick={() => downloadTemplate('kit')}
+                            className="flex items-center gap-2 px-6 py-3 bg-yellow-500 text-blue-950 font-bold rounded-lg hover:bg-yellow-400 transition-colors"
+                          >
+                            <Download className="w-4 h-4" />
+                            Download Kit Checklist
+                          </button>
+                        </div>
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-yellow-500 mb-3">
+                            <CheckCircle className="w-8 h-8 text-blue-950" />
+                          </div>
+                          <p className="text-center text-blue-900 font-medium">PDF Format</p>
+                          <p className="text-center text-sm text-blue-700">Ready to print</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Home Safety Section */}
+          {activeSection === 'safety' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <Home className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Home Safety Measures</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Taking proactive steps to secure your home before an emergency can prevent injuries and reduce property damage. 
+                    These measures should be implemented as part of your overall emergency preparedness plan.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Structural Safety</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Secure Heavy Furniture</p>
+                            <p>Bolt bookcases, TVs, and appliances to walls to prevent tipping.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Reinforce Windows</p>
+                            <p>Install storm shutters or apply safety film to prevent glass breakage.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Check Roofing</p>
+                            <p>Inspect and repair roof damage to prevent water intrusion.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Foundation Inspection</p>
+                            <p>Check for cracks or weaknesses that could compromise stability.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Utility Safety</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Gas Shut-off Valve</p>
+                            <p>Locate and learn how to operate the main gas shut-off valve.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Electrical Panel</p>
+                            <p>Identify and label circuit breakers for quick access.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Water Supply</p>
+                            <p>Know how to shut off main water valve to prevent flooding.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Smoke Detectors</p>
+                            <p>Install and regularly test smoke and carbon monoxide detectors.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Safe Spaces in Your Home</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Earthquake Safety</h4>
+                        <p className="text-sm">Identify under sturdy tables, away from windows</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Fire Safety</h4>
+                        <p className="text-sm">Near exits, away from flammable materials</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Flood Safety</h4>
+                        <p className="text-sm">Highest floor, away from electrical outlets</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Create Your Home Safety Checklist</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Monthly Safety Tasks</h4>
+                          <ul className="space-y-2 text-blue-800">
+                            <li className="flex items-start gap-3">
+                              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              Test smoke detectors
+                            </li>
+                            <li className="flex items-start gap-3">
+                              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              Check fire extinguisher pressure
+                            </li>
+                            <li className="flex items-start gap-3">
+                              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              Inspect emergency kit supplies
+                            </li>
+                          </ul>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Annual Safety Tasks</h4>
+                          <ul className="space-y-2 text-blue-800">
+                            <li className="flex items-start gap-3">
+                              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              Professional home inspection
+                            </li>
+                            <li className="flex items-start gap-3">
+                              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              Replace smoke detector batteries
+                            </li>
+                            <li className="flex items-start gap-3">
+                              <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                              Update emergency contact information
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Training & Drills Section */}
+          {activeSection === 'training' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <Calendar className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Training & Drills</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Regular practice of your emergency plan ensures that all family members know what to do when disaster strikes. 
+                    Conducting drills helps identify weaknesses in your plan and builds confidence in your family's response.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Types of Drills</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Fire Drills</p>
+                            <p>Practice evacuating your home quickly and safely through multiple routes.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Evacuation Drills</p>
+                            <p>Simulate disaster scenarios and practice your evacuation plan.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Shelter-in-Place Drills</p>
+                            <p>Practice staying inside during hazardous conditions.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Communication Drills</p>
+                            <p>Test your communication plan and emergency contact procedures.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">Drill Frequency Recommendations</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <Clock className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Monthly</p>
+                            <p>Basic fire and evacuation drills for all family members.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Clock className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Quarterly</p>
+                            <p>Full emergency plan walkthrough including communication protocols.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Clock className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Semi-Annually</p>
+                            <p>Comprehensive drill involving all scenarios and special considerations.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Clock className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Annually</p>
+                            <p>Review and update your entire emergency plan based on drill results.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Effective Drill Tips</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Realistic Scenarios</h4>
+                        <p className="text-sm">Create realistic conditions to test your plan</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Document Results</h4>
+                        <p className="text-sm">Record what works and what needs improvement</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Involve Everyone</h4>
+                        <p className="text-sm">Include all family members in every drill</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Time Your Response</h4>
+                        <p className="text-sm">Measure how quickly you can evacuate or respond</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Create Your Drill Schedule</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-blue-950 mb-3">Next Fire Drill</h4>
+                          <p className="text-sm text-blue-700 mb-2">Date: _________</p>
+                          <p className="text-sm text-blue-700">Time: _________</p>
+                        </div>
+                        
+                        <div className="bg-yellow-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-blue-950 mb-3">Next Evacuation Drill</h4>
+                          <p className="text-sm text-blue-700 mb-2">Date: _________</p>
+                          <p className="text-sm text-blue-700">Time: _________</p>
+                        </div>
+                        
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                          <h4 className="font-bold text-blue-950 mb-3">Next Full Drill</h4>
+                          <p className="text-sm text-blue-700 mb-2">Date: _________</p>
+                          <p className="text-sm text-blue-700">Time: _________</p>
+                        </div>
+                      </div>
+                      
+                      <div className="mt-6 p-4 bg-blue-900 bg-opacity-10 rounded-lg">
+                        <h4 className="font-bold text-blue-950 mb-2">Drill Evaluation Form</h4>
+                        <p className="text-sm text-blue-700 mb-3">
+                          After each drill, evaluate your family's performance and identify areas for improvement.
+                        </p>
+                        <button
+                          onClick={() => downloadTemplate('drills')}
+                          className="flex items-center gap-2 px-4 py-2 bg-blue-900 text-yellow-500 rounded-md hover:bg-blue-800 transition-colors"
+                        >
+                          <Download className="w-4 h-4" />
+                          Download Drill Evaluation Form
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Special Considerations Section */}
+          {activeSection === 'special' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <Accessibility className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Special Considerations</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Every family has unique needs that must be addressed in their emergency plan. 
+                    Special considerations ensure that all family members, including those with disabilities, 
+                    elderly relatives, young children, and pets, are properly cared for during emergencies.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Baby className="w-6 h-6 text-blue-950" />
+                        <h3 className="text-xl font-bold text-blue-950">Infants & Young Children</h3>
+                      </div>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Supplies</p>
+                            <p>Formula, bottles, diapers, baby food, pacifiers, comfort items.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Transportation</p>
+                            <p>Car seat, stroller, baby carrier for evacuation.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Comfort Items</p>
+                            <p>Favorite toys, blankets, books to reduce stress.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Accessibility className="w-6 h-6 text-blue-950" />
+                        <h3 className="text-xl font-bold text-blue-950">Elderly & Disabled</h3>
+                      </div>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Medical Needs</p>
+                            <p>Extra medications, medical equipment, backup power supplies.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Mobility Aids</p>
+                            <p>Wheelchairs, walkers, canes, and spare batteries.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Communication</p>
+                            <p>Hearing aids, glasses, large-print materials, sign language support.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <div className="flex items-center gap-3 mb-4">
+                        <Dog className="w-6 h-6 text-blue-950" />
+                        <h3 className="text-xl font-bold text-blue-950">Pets & Animals</h3>
+                      </div>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Supplies</p>
+                            <p>Food, water, carrier, leash, vaccination records, medications.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Identification</p>
+                            <p>ID tags, microchip information, recent photos with family members.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <CheckCircle className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Shelter Information</p>
+                            <p>Know pet-friendly evacuation centers and emergency boarding options.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Creating Inclusive Emergency Plans</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Accessibility Features</h4>
+                        <p className="text-sm">Ensure all family members can participate in emergency procedures</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Communication Methods</h4>
+                        <p className="text-sm">Use multiple communication channels to reach everyone</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Transportation Needs</h4>
+                        <p className="text-sm">Plan for specialized transportation requirements</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Medical Equipment</h4>
+                        <p className="text-sm">Ensure backup power and supplies for critical equipment</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Special Needs Planning</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Medical Information</h4>
+                          <div className="space-y-3">
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                              <p className="font-semibold text-blue-900">Allergies</p>
+                              <p className="text-sm text-blue-700">List all known allergies and reactions</p>
+                            </div>
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                              <p className="font-semibold text-blue-950">Chronic Conditions</p>
+                              <p className="text-sm text-blue-700">Document ongoing medical conditions and treatments</p>
+                            </div>
+                            <div className="p-3 bg-blue-50 rounded-lg">
+                              <p className="font-semibold text-blue-950">Medication List</p>
+                              <p className="text-sm text-blue-700">Include dosages, frequency, and prescribing doctors</p>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Support Network</h4>
+                          <div className="space-y-3">
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                              <p className="font-semibold text-blue-950">Caregivers</p>
+                              <p className="text-sm text-blue-700">List primary and backup caregivers with contact info</p>
+                            </div>
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                              <p className="font-semibold text-blue-950">Medical Facilities</p>
+                              <p className="text-sm text-blue-700">Include nearby hospitals and specialists</p>
+                            </div>
+                            <div className="p-3 bg-yellow-50 rounded-lg">
+                              <p className="font-semibold text-blue-950">Support Services</p>
+                              <p className="text-sm text-blue-700">List local disability and senior services</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Updates & Review Section */}
+          {activeSection === 'review' && (
+            <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
+              <div className="bg-gradient-to-r from-blue-950 to-blue-900 p-6">
+                <div className="flex items-center gap-3">
+                  <Edit3 className="text-yellow-500" size={32} />
+                  <h2 className="text-3xl font-bold text-yellow-500">Updates & Review</h2>
+                </div>
+              </div>
+              <div className="p-8">
+                <div className="prose max-w-none">
+                  <p className="text-lg text-blue-900 mb-6">
+                    Emergency plans should be living documents that evolve with your family's changing needs. 
+                    Regular reviews and updates ensure your plan remains relevant and effective.
+                  </p>
+                  
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                    <div className="bg-blue-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">When to Review Your Plan</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <Calendar className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Semi-Annually</p>
+                            <p>Review and update contact information and family details.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Calendar className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">After Major Life Changes</p>
+                            <p>Births, deaths, moves, marriages, or new jobs require plan updates.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Calendar className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">After Drills or Real Events</p>
+                            <p>Update based on lessons learned from practice or actual emergencies.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Calendar className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">When Moving</p>
+                            <p>Update evacuation routes, meeting points, and local emergency contacts.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="bg-yellow-50 p-6 rounded-lg">
+                      <h3 className="text-xl font-bold text-blue-950 mb-4">What to Update</h3>
+                      <ul className="space-y-3 text-blue-800">
+                        <li className="flex items-start gap-3">
+                          <Edit3 className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Contact Information</p>
+                            <p>Phone numbers, addresses, and email addresses for all contacts.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Edit3 className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Family Structure</p>
+                            <p>Changes in family members, ages, or special needs requirements.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Edit3 className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Emergency Kit Contents</p>
+                            <p>Update supplies based on family changes and expired items.</p>
+                          </div>
+                        </li>
+                        <li className="flex items-start gap-3">
+                          <Edit3 className="w-5 h-5 text-blue-950 mt-0.5 flex-shrink-0" />
+                          <div>
+                            <p className="font-semibold">Local Hazards</p>
+                            <p>Adjust plan based on new risks or changes in your area.</p>
+                          </div>
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <div className="bg-gradient-to-r from-blue-900 to-blue-800 rounded-lg p-6 text-white mb-8">
+                    <h3 className="text-xl font-bold mb-4">Review Checklist</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Contact Information</h4>
+                        <p className="text-sm">Verify all phone numbers and addresses are current</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Emergency Kit</h4>
+                        <p className="text-sm">Check expiration dates and replace items as needed</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Evacuation Routes</h4>
+                        <p className="text-sm">Confirm routes are still accessible and safe</p>
+                      </div>
+                      <div className="bg-blue-800 p-4 rounded-lg">
+                        <h4 className="font-bold mb-2">Special Needs</h4>
+                        <p className="text-sm">Update medical information and equipment needs</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="border-t border-gray-200 pt-8">
+                    <h3 className="text-2xl font-bold text-blue-950 mb-6">Schedule Your Next Review</h3>
+                    <div className="bg-white border-2 border-blue-200 rounded-lg p-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Review Schedule</h4>
+                          <div className="space-y-4">
+                            <div className="p-4 bg-blue-50 rounded-lg">
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="font-semibold text-blue-950">Last Review</span>
+                                <span className="text-blue-700">June 15, 2024</span>
+                              </div>
+                              <div className="text-sm text-blue-600">Family emergency plan and contact information updated</div>
+                            </div>
+                            
+                            <div className="p-4 bg-yellow-50 rounded-lg">
+                              <div className="flex justify-between items-center mb-2">
+                                <span className="font-semibold text-blue-950">Next Review</span>
+                                <span className="text-blue-700">December 15, 2024</span>
+                              </div>
+                              <div className="text-sm text-blue-600">Semi-annual review scheduled</div>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div>
+                          <h4 className="text-lg font-bold text-blue-950 mb-4">Set Reminders</h4>
+                          <div className="space-y-3">
+                            <button className="w-full flex items-center justify-between p-3 bg-blue-900 text-yellow-500 rounded-lg hover:bg-blue-800 transition-colors">
+                              <span>Add to Calendar</span>
+                              <Calendar className="w-5 h-5" />
+                            </button>
+                            <button className="w-full flex items-center justify-between p-3 bg-blue-900 text-yellow-500 rounded-lg hover:bg-blue-800 transition-colors">
+                              <span>Email Reminder</span>
+                              <Mail className="w-5 h-5" />
+                            </button>
+                            <button className="w-full flex items-center justify-between p-3 bg-blue-900 text-yellow-500 rounded-lg hover:bg-blue-800 transition-colors">
+                              <span>Download Review Checklist</span>
+                              <Download className="w-5 h-5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Resources Section */}
+      <section className="py-16 px-4 bg-blue-900">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+              Additional <span className="text-yellow-500">Resources</span>
+            </h2>
+            <p className="text-xl text-blue-200">
+              Helpful links and resources for emergency preparedness
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="bg-white rounded-xl p-6 shadow-lg">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500">
+                  <ExternalLink className="w-5 h-5 text-blue-950" />
+                </div>
+                <h3 className="text-lg font-bold text-blue-950">Government Resources</h3>
+              </div>
+              <ul className="space-y-2 text-blue-800">
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">National Disaster Risk Reduction and Management Council</a></li>
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">Local MDRRMO Website</a></li>
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">Philippine Institute of Volcanology and Seismology</a></li>
+              </ul>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 shadow-lg">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500">
+                  <Users className="w-5 h-5 text-blue-950" />
+                </div>
+                <h3 className="text-lg font-bold text-blue-950">Community Resources</h3>
+              </div>
+              <ul className="space-y-2 text-blue-800">
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">Barangay Emergency Response Teams</a></li>
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">Community Emergency Plans</a></li>
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">Neighborhood Watch Programs</a></li>
+              </ul>
+            </div>
+            
+            <div className="bg-white rounded-xl p-6 shadow-lg">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-yellow-500">
+                  <Shield className="w-5 h-5 text-blue-950" />
+                </div>
+                <h3 className="text-lg font-bold text-blue-950">Training & Education</h3>
+              </div>
+              <ul className="space-y-2 text-blue-800">
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">First Aid Certification Courses</a></li>
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">Emergency Preparedness Workshops</a></li>
+                <li><a href="#" className="text-blue-600 hover:text-blue-800">Disaster Risk Reduction Training</a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default App;
