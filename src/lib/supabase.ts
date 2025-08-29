@@ -44,7 +44,7 @@ export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
     schema: 'public'
   }
   }
-});
+);
 
 // Connection state management
 let isConnected = false;
