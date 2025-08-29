@@ -3,34 +3,136 @@ import { createClient } from '@supabase/supabase-js';
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.error('Missing Supabase environment variables. Please check your .env file.');
-  console.error('VITE_SUPABASE_URL:', supabaseUrl ? 'Set' : 'Missing');
-  console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Set' : 'Missing');
-  throw new Error('Missing Supabase environment variables. Please check your .env file.');
-}
+// Validate environment variables
+const validateEnvironment = () => {
+  if (!supabaseUrl || !supabaseAnonKey) {
+    console.error('Missing Supabase environment variables. Please check your .env file.');
+    console.error('VITE_SUPABASE_URL:', supabaseUrl ? 'Set' : 'Missing');
+    console.error('VITE_SUPABASE_ANON_KEY:', supabaseAnonKey ? 'Set' : 'Missing');
+    return false;
+  }
+  
+  if (supabaseUrl.includes('your-project-ref') || supabaseAnonKey.includes('your-anon-key')) {
+    console.error('Supabase environment variables contain placeholder values');
+    return false;
+  }
+  
+  return true;
+};
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+// Create Supabase client with enhanced configuration
+export const supabase = createClient(supabaseUrl || '', supabaseAnonKey || '', {
   auth: {
     autoRefreshToken: true,
     persistSession: true,
-    detectSessionInUrl: true
+    detectSessionInUrl: true,
+    flowType: 'pkce'
   },
   realtime: {
     params: {
       eventsPerSecond: 10
+    },
+    heartbeatIntervalMs: 30000,
+    reconnectAfterMs: (tries: number) => Math.min(tries * 1000, 30000)
+  },
+  global: {
+    headers: {
+      'x-application-name': 'mdrrmo-pio-duran'
     }
+  },
+  db: {
+    schema: 'public'
+  }
   }
 });
 
-// Test connection on initialization
-supabase.from('news').select('count').limit(1).then(({ error }) => {
-  if (error) {
-    console.error('Supabase connection test failed:', error);
-  } else {
-    console.log('✅ Supabase connection successful');
+// Connection state management
+let isConnected = false;
+let connectionRetries = 0;
+const maxRetries = 5;
+const retryDelay = 2000;
+
+// Enhanced connection testing with retry logic
+const testConnection = async (retryCount = 0): Promise<boolean> => {
+  try {
+    if (!validateEnvironment()) {
+      console.warn('⚠️ Supabase not configured - running in offline mode');
+      return false;
+    }
+
+    const { data, error } = await supabase
+      .from('news')
+      .select('count')
+      .limit(1);
+
+    if (error) {
+      throw error;
+    }
+
+    isConnected = true;
+    connectionRetries = 0;
+    console.log('✅ Supabase connection established');
+    
+    // Dispatch custom event for connection status
+    window.dispatchEvent(new CustomEvent('supabase-connected', { detail: { connected: true } }));
+    
+    return true;
+  } catch (error) {
+    console.error(`❌ Supabase connection failed (attempt ${retryCount + 1}):`, error);
+    isConnected = false;
+    
+    // Retry connection with exponential backoff
+    if (retryCount < maxRetries) {
+      connectionRetries = retryCount + 1;
+      const delay = retryDelay * Math.pow(2, retryCount);
+      
+      console.log(`🔄 Retrying connection in ${delay}ms...`);
+      
+      setTimeout(() => {
+        testConnection(retryCount + 1);
+      }, delay);
+    } else {
+      console.warn('⚠️ Max connection retries reached - running in offline mode');
+      window.dispatchEvent(new CustomEvent('supabase-disconnected', { detail: { connected: false } }));
+    }
+    
+    return false;
   }
-});
+};
+
+// Initialize connection
+testConnection();
+
+// Monitor connection status
+const monitorConnection = () => {
+  setInterval(async () => {
+    if (!isConnected) {
+      await testConnection();
+    }
+  }, 30000); // Check every 30 seconds
+};
+
+// Start monitoring after initial load
+setTimeout(monitorConnection, 5000);
+
+// Handle network status changes
+if (typeof window !== 'undefined') {
+  window.addEventListener('online', () => {
+    console.log('🌐 Network connection restored');
+    testConnection();
+  });
+  
+  window.addEventListener('offline', () => {
+    console.log('📡 Network connection lost');
+    isConnected = false;
+    window.dispatchEvent(new CustomEvent('supabase-disconnected', { detail: { connected: false } }));
+  });
+}
+
+// Export connection utilities
+export const getConnectionStatus = () => isConnected;
+export const forceReconnect = () => testConnection();
+export const getRetryCount = () => connectionRetries;
 
 // Type aliases for union types
 export type NewsStatus = 'published' | 'draft';

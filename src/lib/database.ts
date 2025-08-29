@@ -13,19 +13,100 @@ type SettingRow = Tables['system_settings']['Row'];
 
 export class DatabaseManager {
   private isConnected = false;
+  private connectionPromise: Promise<boolean> | null = null;
+  private lastHealthCheck = 0;
+  private healthCheckInterval = 30000; // 30 seconds
 
   constructor() {
-    this.testConnection();
+    this.initializeConnection();
   }
 
-  async testConnection(): Promise<boolean> {
+  private async initializeConnection(): Promise<void> {
     try {
-      const { data, error } = await supabase.from('news').select('count').limit(1);
+      await this.testConnection();
+      this.startHealthMonitoring();
+    } catch (error) {
+      console.error('Failed to initialize database connection:', error);
+    }
+  }
+
+  private startHealthMonitoring(): void {
+    setInterval(async () => {
+      if (this.isConnected) {
+        try {
+          await this.quickHealthCheck();
+        } catch (error) {
+          console.warn('Health check failed:', error);
+          this.isConnected = false;
+        }
+      }
+    }, this.healthCheckInterval);
+  }
+
+  private async quickHealthCheck(): Promise<boolean> {
+    try {
+      const { error } = await supabase
+        .from('news')
+        .select('count')
+        .limit(1);
+      
       if (error) throw error;
-      this.isConnected = true;
       return true;
     } catch (error) {
-      console.error('Database connection failed:', error);
+      throw error;
+    }
+  }
+  async testConnection(): Promise<boolean> {
+    // Prevent multiple simultaneous connection tests
+    if (this.connectionPromise) {
+      return this.connectionPromise;
+    }
+    
+    this.connectionPromise = this.performConnectionTest();
+    const result = await this.connectionPromise;
+    this.connectionPromise = null;
+    
+    return result;
+  }
+
+  private async performConnectionTest(): Promise<boolean> {
+    try {
+      // Check environment variables first
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+      
+      if (!supabaseUrl || !supabaseKey || 
+          supabaseUrl.includes('your-project-ref') || 
+          supabaseKey.includes('your-anon-key')) {
+        this.isConnected = false;
+        return false;
+      }
+      
+      // Test connection with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      
+      const { data, error } = await supabase
+        .from('news')
+        .select('count')
+        .limit(1)
+        .abortSignal(controller.signal);
+      
+      clearTimeout(timeoutId);
+      
+      if (error) throw error;
+      
+      this.isConnected = true;
+      this.lastHealthCheck = Date.now();
+      
+      console.log('✅ Database connection verified');
+      return true;
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.error('❌ Database connection timeout');
+      } else {
+        console.error('❌ Database connection failed:', error);
+      }
       this.isConnected = false;
       return false;
     }
@@ -35,8 +116,26 @@ export class DatabaseManager {
     return this.isConnected;
   }
 
+  getLastHealthCheck(): number {
+    return this.lastHealthCheck;
+  }
+
+  async ensureConnection(): Promise<boolean> {
+    if (!this.isConnected) {
+      return await this.testConnection();
+    }
+    
+    // Check if health check is stale
+    if (Date.now() - this.lastHealthCheck > this.healthCheckInterval) {
+      return await this.testConnection();
+    }
+    
+    return true;
+  }
   // News operations
   async getNews(): Promise<NewsRow[]> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('news')
       .select('*')
@@ -47,6 +146,8 @@ export class DatabaseManager {
   }
 
   async createNews(news: Omit<NewsRow, 'id' | 'created_at' | 'updated_at'>): Promise<NewsRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('news')
       .insert([news])
@@ -58,6 +159,8 @@ export class DatabaseManager {
   }
 
   async updateNews(id: string, updates: Partial<NewsRow>): Promise<NewsRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('news')
       .update(updates)
@@ -70,6 +173,8 @@ export class DatabaseManager {
   }
 
   async deleteNews(id: string): Promise<void> {
+    await this.ensureConnection();
+    
     const { error } = await supabase
       .from('news')
       .delete()
@@ -80,6 +185,8 @@ export class DatabaseManager {
 
   // Services operations
   async getServices(): Promise<ServiceRow[]> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('services')
       .select('*')
@@ -90,6 +197,8 @@ export class DatabaseManager {
   }
 
   async createService(service: Omit<ServiceRow, 'id' | 'created_at' | 'updated_at'>): Promise<ServiceRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('services')
       .insert([service])
@@ -101,6 +210,8 @@ export class DatabaseManager {
   }
 
   async updateService(id: string, updates: Partial<ServiceRow>): Promise<ServiceRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('services')
       .update(updates)
@@ -113,6 +224,8 @@ export class DatabaseManager {
   }
 
   async deleteService(id: string): Promise<void> {
+    await this.ensureConnection();
+    
     const { error } = await supabase
       .from('services')
       .delete()
@@ -123,6 +236,8 @@ export class DatabaseManager {
 
   // Incident operations
   async getIncidents(): Promise<IncidentRow[]> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('incident_reports')
       .select('*')
@@ -133,6 +248,8 @@ export class DatabaseManager {
   }
 
   async createIncident(incident: Omit<IncidentRow, 'id' | 'date_reported' | 'updated_at' | 'reference_number'>): Promise<IncidentRow> {
+    await this.ensureConnection();
+    
     const referenceNumber = (incident as any).reference_number || 
       `RD-${new Date().getFullYear()}-${String(Math.floor(Math.random() * 9999) + 1).padStart(4, '0')}`;
     
@@ -177,6 +294,8 @@ export class DatabaseManager {
   }
 
   async updateIncident(id: string, updates: Partial<IncidentRow>): Promise<IncidentRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('incident_reports')
       .update(updates)
@@ -189,6 +308,8 @@ export class DatabaseManager {
   }
 
   async deleteIncident(id: string): Promise<void> {
+    await this.ensureConnection();
+    
     const { error } = await supabase
       .from('incident_reports')
       .delete()
@@ -199,6 +320,8 @@ export class DatabaseManager {
 
   // Gallery operations
   async getGallery(): Promise<GalleryRow[]> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('gallery')
       .select('*')
@@ -209,6 +332,8 @@ export class DatabaseManager {
   }
 
   async createGalleryItem(item: Omit<GalleryRow, 'id' | 'created_at' | 'updated_at'>): Promise<GalleryRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('gallery')
       .insert([item])
@@ -220,6 +345,8 @@ export class DatabaseManager {
   }
 
   async updateGalleryItem(id: string, updates: Partial<GalleryRow>): Promise<GalleryRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('gallery')
       .update(updates)
@@ -232,6 +359,8 @@ export class DatabaseManager {
   }
 
   async deleteGalleryItem(id: string): Promise<void> {
+    await this.ensureConnection();
+    
     const { error } = await supabase
       .from('gallery')
       .delete()
@@ -242,6 +371,8 @@ export class DatabaseManager {
 
   // Users operations
   async getUsers(): Promise<UserRow[]> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('users')
       .select('*')
@@ -258,6 +389,8 @@ export class DatabaseManager {
   }
 
   async authenticateUser(email: string, password: string): Promise<UserRow | null> {
+    await this.ensureConnection();
+    
     try {
       // First check if user exists in database
       const { data: userData, error: userError } = await supabase
@@ -289,6 +422,8 @@ export class DatabaseManager {
   }
 
   async updateUser(id: string, updates: Partial<UserRow>): Promise<UserRow> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('users')
       .update(updates)
@@ -301,6 +436,8 @@ export class DatabaseManager {
   }
 
   async deleteUser(id: string): Promise<void> {
+    await this.ensureConnection();
+    
     // Delete from users table first
     const { error } = await supabase
       .from('users')
@@ -318,6 +455,8 @@ export class DatabaseManager {
 
   // Settings operations
   async getSettings(): Promise<SettingRow[]> {
+    await this.ensureConnection();
+    
     const { data, error } = await supabase
       .from('system_settings')
       .select('*');
@@ -328,6 +467,8 @@ export class DatabaseManager {
 
 
   async updateSetting(key: string, value: any, type: string = 'string', isPublic: boolean = false): Promise<void> {
+    await this.ensureConnection();
+    
     const { error } = await supabase
       .from('system_settings')
       .upsert({
@@ -351,15 +492,46 @@ export class DatabaseManager {
   // Health check
   async healthCheck(): Promise<{ status: 'healthy' | 'unhealthy'; message: string }> {
     try {
-      const { data, error } = await supabase.from('news').select('count').limit(1);
+      // Check if we're online first
+      if (!navigator.onLine) {
+        return { status: 'unhealthy', message: 'No network connection' };
+      }
+      
+      // Test database connection with timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      
+        .limit(1)
+        .abortSignal(controller.signal);
+      
+      clearTimeout(timeoutId);
+      
       if (error) throw error;
+      
+      this.lastHealthCheck = Date.now();
       return { status: 'healthy', message: 'Database connection successful' };
     } catch (error) {
+      if (error.name === 'AbortError') {
+        return { status: 'unhealthy', message: 'Connection timeout' };
+      }
       return {
         status: 'unhealthy',
         message: error instanceof Error ? error.message : 'Unknown error'
       };
     }
+  }
+  
+  // Get connection statistics
+  getConnectionStats(): {
+    isConnected: boolean;
+    lastHealthCheck: number;
+    timeSinceLastCheck: number;
+  } {
+    return {
+      isConnected: this.isConnected,
+      lastHealthCheck: this.lastHealthCheck,
+      timeSinceLastCheck: Date.now() - this.lastHealthCheck
+    };
   }
 }
 
